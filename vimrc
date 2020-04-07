@@ -5,8 +5,6 @@
 " It is recommended to make changes after sourcing debian.vim since it alters
 " the value of the 'compatible' option.
 
-" This line should not be removed as it ensures that various options are
-" properly set to work with the Vim-related packages available in Debian.
 runtime! debian.vim
 
 " Vim will load $VIMRUNTIME/defaults.vim if the user does not have a vimrc.
@@ -23,9 +21,7 @@ runtime! debian.vim
 
 " Vim5 and later versions support syntax highlighting. Uncommenting the next
 " line enables syntax highlighting by default.
-if has("syntax")
-  syntax on
-endif
+"syntax on
 
 " If using a dark background within the editing area and syntax highlighting
 " turn on this option as well
@@ -33,15 +29,11 @@ endif
 
 " Uncomment the following to have Vim jump to the last position when
 " reopening a file
-"if has("autocmd")
-"  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
-"endif
+"au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 " Uncomment the following to have Vim load indentation rules and plugins
 " according to the detected filetype.
-"if has("autocmd")
-"  filetype plugin indent on
-"endif
+"filetype plugin indent on
 
 " The following are commented out as they cause vim to behave a lot
 " differently from regular Vi. They are highly recommended though.
@@ -58,6 +50,7 @@ endif
 if filereadable("/etc/vim/vimrc.local")
   source /etc/vim/vimrc.local
 endif
+
 
 "encoding options"
 set enc=utf-8
@@ -79,6 +72,7 @@ set matchtime=3
 inoremap } }<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
 inoremap ] ]<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
 inoremap ) )<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
+inoremap > ><Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
 "key mappings
 :let mapleader = ","
 :map <Leader>h :echo "Hello world"<CR>
@@ -87,6 +81,7 @@ inoremap ) )<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
 :nnoremap <leader>{ viw<esc>a}<esc>hbi{<esc>lel
 :nnoremap <leader>[ viw<esc>a]<esc>hbi[<esc>lel
 :nnoremap <leader>( viw<esc>a)<esc>hbi(<esc>lel
+:nnoremap <leader>< viw<esc>a><esc>hbi<<esc>lel
 :nnoremap 0 H
 :nnoremap $ L
 :nnoremap H 0
@@ -128,7 +123,4 @@ inoremap ) )<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
 :set statusline+=%l
 :set statusline+=/
 :set statusline+=%L
-
-
-
 
