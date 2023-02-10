@@ -67,7 +67,7 @@ set wrap
 set numberwidth=2
 set tabstop=2
 set shiftwidth=2
-set showhere does vimrc livewmatch
+set showmatch
 set matchtime=3
 "some fancier parenthesis matchning code
 inoremap } }<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
