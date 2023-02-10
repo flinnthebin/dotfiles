@@ -27,7 +27,7 @@ runtime! debian.vim
 " turn on this option as well
 "set background=dark
 
-" Uncomment the following to have Vim jump to the last position when
+" Uncomment the following to have Vim jump to the last powhere does vimrc livesition when
 " reopening a file
 "au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
@@ -63,10 +63,11 @@ nnoremap <space> za
 :echom "(>^.^<)"
 "line spacings, text wrapping, indentation and parenthesis matching
 set number
-set numberwidth=2
 set wrap
-set shiftwidth=4
-set showmatch
+set numberwidth=2
+set tabstop=2
+set shiftwidth=2
+set showhere does vimrc livewmatch
 set matchtime=3
 "some fancier parenthesis matchning code
 inoremap } }<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
