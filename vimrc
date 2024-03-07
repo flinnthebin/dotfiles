@@ -1,11 +1,11 @@
-" GLOBAL
-
-" Turn off Vi backwards compatibility
+let mapleader = ';'
+let localleader = ';'
+colorscheme retrobox 
+:" Turn off Vi backwards compatibility
 set nocompatible
 " Formatting
 syntax on
 set encoding=utf-8
-set background=dark
 set number
 set relativenumber
 set wrap
@@ -31,24 +31,15 @@ filetype plugin on
 " the path, but all subdirectories to unlimited depth
 set path+=**
 
-
 " Display all matching files on tab-complete
+" :find tabs through partial matches
+" :b <substring> autocompletes from the file buffer
+" :ls jumps to recently buffered file
 set wildmenu
-
-" Enables
-" - tab can now :find by partial match
-" - use * to make it fuzzy
-
-" Considerations
-" - :b - autocompletion on open buffer
-"   providing the :b command with a unique substring of an open file
-"   in the file buffer :ls will make vim jump to that file. If more
-"   than one match, throws error. Allows for tabcomplete
 "
 " TAG JUMPING
 " install ctags
 set tags+=./tags;
-
 
 " Create the `tags` file
 command! MakeTags !ctags -R .
@@ -57,9 +48,68 @@ command! MakeTags !ctags -R .
 " " g^] - jump to ambiguous tag
 " ^t - jump back up the tag stack
 " ctags -R . - search recursively
-
-" Considerations
 " - ^n and ^p toggle autocomplete (NP Complete lmao)
+
+" FILE BROWSING
+
+" disable netrw banner
+let g:netrw_banner=0
+" open in prior window
+let g:netrw_browse_split=4
+"open splits to the right
+let g:netrw_altv=1
+" tree view
+let g:netrw_liststyle=3
+let g:netrw_list_hide=netrw_gitignore#Hide()
+let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.S\+'
+
+" C++ SNIPPETS
+" Control Flow 
+nnoremap <leader>if.cpp :-1read $HOME/.config/nvim/templates/cpp/control-flow/if.cpp<CR>
+nnoremap <leader>for.cpp :-1read $HOME/.config/nvim/templates/cpp/control-flow/for.cpp<CR>
+nnoremap <leader>switch.cpp :-1read $HOME/.config/nvim/templates/cpp/control-flow/switch.cpp<CR>
+" Data Structures
+nnoremap <leader>array.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/array.cpp<CR>
+nnoremap <leader>deque.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/deque.cpp<CR>
+nnoremap <leader>list.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/list.cpp<CR>
+nnoremap <leader>map.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/map.cpp<CR>
+nnoremap <leader>priority.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/priority.cpp<CR>
+nnoremap <leader>queue.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/queue.cpp<CR>
+nnoremap <leader>set.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/set.cpp<CR>
+nnoremap <leader>stack.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/stack.cpp<CR>
+nnoremap <leader>umap.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/umap.cpp<CR>
+nnoremap <leader>uset.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/uset.cpp<CR>
+nnoremap <leader>vector.cpp :-1read $HOME/.config/nvim/templates/cpp/data-structures/vector.cpp<CR>
+" Design Patterns
+" Creational
+nnoremap <leader>abfactory.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/abstractfactory.cpp<CR>
+nnoremap <leader>builder.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/builder.cpp<CR>
+nnoremap <leader>factory.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/factory.cpp<CR>
+nnoremap <leader>prototype.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/prototype.cpp<CR>
+nnoremap <leader>singleton.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/singleton.cpp<CR>
+" Structural
+nnoremap <leader>adapter.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/adapter.cpp<CR>
+nnoremap <leader>bridge.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/bridge.cpp<CR>
+nnoremap <leader>composite.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/composite.cpp<CR>
+nnoremap <leader>decorator.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/decorator.cpp<CR>
+nnoremap <leader>facade.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/facade.cpp<CR>
+nnoremap <leader>flyweight.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/flyweight.cpp<CR>
+nnoremap <leader>proxy.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/proxy.cpp<CR>
+" Behavioural
+nnoremap <leader>chain.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/chain.cpp<CR>
+nnoremap <leader>command.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/command.cpp<CR>
+nnoremap <leader>interpreter.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/interpreter.cpp<CR>
+nnoremap <leader>iterator.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/iterator.cpp<CR>
+nnoremap <leader>mediator.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/mediator.cpp<CR>
+nnoremap <leader>memento.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/memento.cpp<CR>
+nnoremap <leader>observer.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/observer.cpp<CR>
+nnoremap <leader>state.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/state.cpp<CR>
+nnoremap <leader>strategy.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/strategy.cpp<CR>
+nnoremap <leader>template.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/template.cpp<CR>
+nnoremap <leader>visitor.cpp :-1read $HOME/.config/nvim/templates/cpp/design-patterns/visitor.cpp<CR>
+
+" Replace all occurences of word under cursor
+nnoremap <leader>ra :%s/<c-r><c-w>/<c-r><c-w>/gc<c-f>$F/i
 
 " AUTO-CLOSING BRACKETS
 inoremap } }<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
@@ -68,8 +118,6 @@ inoremap ) )<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
 inoremap > ><Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
 
 " KEY BINDINGS
-
-let mapleader = ';'
 
 " Enclose selected text in quotations/brackets
 :nnoremap <leader>' viw<esc>a'<esc>hbi'<esc>lel
@@ -118,6 +166,7 @@ let mapleader = ';'
 :augroup vim
 :    autocmd!
 :    autocmd FileType vim setlocal foldmethod=marker
+:		 autocmd FileType vim nnoremap <buffer> <leader>c I"<esc>
 :augroup end
 " Group for languages using // comments
 augroup lineCommentSlash
@@ -131,16 +180,7 @@ augroup lineCommentHash
 augroup END
 
 " Statusline
-" Display the path and filename in the current buffer
-:set statusline=%f
-" Separate left-aligned and right-aligned items in statusline
-:set statusline+=%=
-" Append current line number to statusline
-:set statusline+=%l
-" Add forwardslash
-:set statusline+=/
-" Append total number of lines
-:set statusline+=%L
+:set statusline=%f%=%c,%{strlen(getline('.'))}\|%l/%L
 
 " Enable highlighting of C++11 attributes
 let g:cpp_attributes_highlight = 1
@@ -156,16 +196,8 @@ let g:cpp_simple_highlight = 1
 :echom " "
 :echom ":help ins-completion = AUTOCOMPLETE COMMANDS"
 :echom " "
-:echom "1. Whole lines                                 |i_CTRL-X_CTRL-L|"
-:echom "2. keywords in the current file                |i_CTRL-X_CTRL-N|"
-:echom "3. keywords in 'dictionary'                    |i_CTRL-X_CTRL-K|"
-:echom "4. keywords in 'thesaurus', thesaurus-style    |i_CTRL-X_CTRL-T|"
-:echom "5. keywords in the current and included files  |i_CTRL-X_CTRL-I|"
-:echom "6. tags                                        |i_CTRL-X_CTRL-]|"
-:echom "7. file names                                  |i_CTRL-X_CTRL-F|"
-:echom "8. definitions or macros                       |i_CTRL-X_CTRL-D|"
-:echom "9. Vim command-line                            |i_CTRL-X_CTRL-V|"
-:echom "10. User defined completion                    |i_CTRL-X_CTRL-U|"
-:echom "11. omni completion                            |i_CTRL-X_CTRL-O|"
-:echom "12. Spelling suggestions                       |i_CTRL-X_s|"
-:echom "13. keywords in 'complete'                     |i_CTRL-N| |i_CTRL-P|"
+:echom ":help netrw-browse-maps = FILE BROWSING MAPPINGS" 
+:echom " "
+:echom ":help c_<command> i_<command>, v_<command> for non-normal mode command help"
+:echom " "
+:echom ":helpgrep <term> to grep all help files. nav :cn, :ca, :cl"
