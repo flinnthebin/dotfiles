@@ -4,14 +4,16 @@ colorscheme retrobox
 :" Turn off Vi backwards compatibility
 set nocompatible
 " Formatting
+" set textwidth = 120 (use for school)
 syntax on
 set encoding=utf-8
 set number
 set relativenumber
 set wrap
-set numberwidth=2
-set tabstop=2
-set shiftwidth=2
+set numberwidth=4
+set tabstop=4
+set shiftwidth=4
+set expandtab
 set showmatch
 set matchtime=3
 " define what a word is (navigation)
@@ -111,11 +113,16 @@ nnoremap <leader>visitor.cpp :-1read $HOME/.config/nvim/templates/cpp/design-pat
 " Replace all occurences of word under cursor
 nnoremap <leader>ra :%s/<c-r><c-w>/<c-r><c-w>/gc<c-f>$F/i
 
+"Go Formatter
+nnoremap <leader>G :GoFmt<CR>
+"Little Linter
+nnoremap<leader>L :%!lindt<CR>
+
 " AUTO-CLOSING BRACKETS
-inoremap } }<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
-inoremap ] ]<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
-inoremap ) )<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
-inoremap > ><Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
+"inoremap } }<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
+"inoremap ] ]<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
+"inoremap ) )<Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
+"inoremap > ><Left><c-o>%<c-o>:sleep 500m<CR><c-o>%<c-o>a
 
 " KEY BINDINGS
 
@@ -182,14 +189,6 @@ augroup END
 " Statusline
 :set statusline=%f%=%c,%{strlen(getline('.'))}\|%l/%L
 
-" Enable highlighting of C++11 attributes
-let g:cpp_attributes_highlight = 1
-" Highlight struct/class member variables (affects both C and C++ files)
-let g:cpp_member_highlight = 1
-" Put all standard C and C++ keywords under Vim's highlight group 'Statement'
-" (affects both C and C++ files)
-let g:cpp_simple_highlight = 1
-
 " WELCOME MESSAGE
 
 :echom "SHIFT + K = keyword lookup"
@@ -201,3 +200,17 @@ let g:cpp_simple_highlight = 1
 :echom ":help c_<command> i_<command>, v_<command> for non-normal mode command help"
 :echom " "
 :echom ":helpgrep <term> to grep all help files. nav :cn, :ca, :cl"
+
+command GPT call GPT()
+
+function! GPT()
+    let path = expand('/usr/bin/iago')
+    let tokens = 4096
+    let temperature = 0
+    let curr = expand('%p')
+    let type = fnamemodify(curr, ':e')
+    let out = 'out.' . type
+    let cmd = '! ' . shellescape(path) . ' -s ' . tokens . ' -t ' . temperature . ' ' . shellescape(curr)
+    execute cmd
+    execute 'vsplit ' . out
+endfunction
