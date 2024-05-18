@@ -8,7 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME="flinnthebin"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -104,9 +104,9 @@ alias ssh="ssh -Y"
 alias agent="eval $(ssh-agent -s)"
 alias vol+='pactl set-sink-volume @DEFAULT_SINK@ +5%'
 alias vol-='pactl set-sink-volume @DEFAULT_SINK@ -5%'
+alias unbuild='rm -rf build'
 
-#PATH
-
+# PATH
 prependPath() {
     if [[ "$PATH" != *"$1"* ]]; then
         export PATH=$PATH:$1
@@ -114,12 +114,23 @@ prependPath() {
 }
 
 appendPath() {
-    if [[ "$PATH" != *"$!"* ]]; then
+    if [[ "$PATH" != *"$1"* ]]; then
         export PATH=$PATH:$1
     fi
 }
 
-export PATH="$PATH:$HOME/go/bin"
+appendPath "/opt/go/bin"
+
+# BUILD
+build() {
+    mkdir -p build && \
+    cd build && \
+    cmake .. && \
+    cmake --build . && \
+    cd ..
+}
+
+echo $PWD && l
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
