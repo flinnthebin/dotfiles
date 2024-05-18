@@ -1,2 +1,2 @@
-# vim
-holds the vimrc file
+# dotfiles
+incase i delete /usr/bin (again)
