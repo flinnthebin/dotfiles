@@ -457,6 +457,46 @@ require("lazy").setup({
 			}
 			-- Enable ZLS
 			nvim_lsp.zls.setup(zls_config)
+
+			-- Add clangd setup for C++
+			local clangd_cmd =
+				{ "clangd", "--clang-tidy", "--completion-style=detailed", "--header-insertion=never", "--std=c++23" }
+			local clangd_config = {
+				cmd = clangd_cmd,
+				filetypes = { "c", "cpp", "objc", "objcpp" },
+				root_dir = require("lspconfig").util.root_pattern("compile_commands.json", "compile_flags.txt", ".git"),
+			}
+			nvim_lsp.clangd.setup(clangd_config)
+			-- Function to toggle clangd LSP features
+			local clangd_enabled = true
+			function ToggleClangdFeatures()
+				clangd_enabled = not clangd_enabled
+				local clients = vim.lsp.get_active_clients()
+				for _, client in ipairs(clients) do
+					if client.name == "clangd" then
+						if clangd_enabled then
+							client.config.capabilities.textDocument.completion =
+								{ completionItem = { snippetSupport = true } }
+							client.config.capabilities.textDocument.publishDiagnostics = true
+							vim.diagnostic.enable()
+							print("Clangd LSP features enabled")
+						else
+							client.config.capabilities.textDocument.completion = nil
+							client.config.capabilities.textDocument.publishDiagnostics = false
+							vim.diagnostic.disable()
+							print("Clangd LSP features disabled")
+						end
+						client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+					end
+				end
+			end
+			-- Keymap to toggle clangd LSP features
+			vim.api.nvim_set_keymap(
+				"n",
+				"<leader>lsp",
+				":lua ToggleClangdFeatures()<CR>",
+				{ noremap = true, silent = true }
+			)
 			local servers = {
 				zls = {},
 				clangd = {},
@@ -888,6 +928,97 @@ require("lazy").setup({
 			--    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
 			--    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
 			--    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+		end,
+	},
+
+	{ -- Debugger
+		"mfussenegger/nvim-dap",
+		dependencies = {
+			"git@github.com:leoluz/nvim-dap-go.git",
+			"rcarriga/nvim-dap-ui",
+			"theHamsta/nvim-dap-virtual-text",
+			"nvim-neotest/nvim-nio",
+			"williamboman/mason.nvim",
+		},
+		config = function()
+			local dap = require("dap")
+			local ui = require("dapui")
+
+			require("dapui").setup()
+
+			dap.adapters.cpp = {
+				id = "cpp",
+				type = "executable",
+				command = vim.fn.stdpath("data") .. "/mason/bin/OpenDebugAD7",
+			}
+
+			dap.configurations.cpp = {
+				{
+					name = "Launch",
+					type = "cpp",
+					request = "launch",
+					program = function()
+						local input = ""
+						vim.ui.input({
+							prompt = "Path to executable: ",
+							default = vim.fn.getcwd() .. "/",
+						}, function(user_input)
+							input = user_input
+						end)
+						return input
+					end,
+					cwd = "${workspaceFolder}",
+					stopOnEntry = false,
+					args = {},
+					runInTerminal = true,
+				},
+			}
+
+			require("nvim-dap-virtual-text").setup({
+				display_callback = function(variable)
+					local name = string.lower(variable.name)
+					local value = string.lower(variable.value)
+					if name:match("secret") or name:match("api") or value:match("secret") or value:match("api") then
+						return "*****"
+					end
+
+					if #variable.value > 15 then
+						return " " .. string.sub(variable.value, 1, 15) .. " ... "
+					end
+
+					return " " .. variable.value
+				end,
+			})
+
+			vim.keymap.set("n", "<leader><space>b", dap.toggle_breakpoint)
+			vim.keymap.set("n", "<leader><space>tbc", dap.run_to_cursor)
+			vim.keymap.set("n", "<leader><space>c", dap.continue)
+			vim.keymap.set("n", "<leader><space>s", dap.step_into)
+			vim.keymap.set("n", "<leader><space>n", dap.step_over)
+			vim.keymap.set("n", "<leader><space>f", dap.step_out)
+			vim.keymap.set("n", "<leader><space>rc", dap.step_back)
+			vim.keymap.set("n", "<leader><space>run", dap.restart)
+
+			-- Eval var under cursor
+			vim.keymap.set("n", "<leader><space>?", function()
+				ui.eval(nil, { context = "hover", width = 50, height = 20, enter = true })
+			end)
+
+			dap.listeners.before.attach.dapui_config = function()
+				ui.open()
+			end
+
+			dap.listeners.before.launch.dapui_config = function()
+				ui.open()
+			end
+
+			dap.listeners.before.event_terminated.dapui_config = function()
+				ui.close()
+			end
+
+			dap.listeners.before.event_exited.dapui_config = function()
+				ui.close()
+			end
 		end,
 	},
 }, {
