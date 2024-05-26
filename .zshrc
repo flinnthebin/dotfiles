@@ -110,7 +110,7 @@ compinit
 # Alias
 alias python=python3
 alias pip=pip3
-alias vim=nvim
+alias vim=nvim ~/$(pwd | sed "s|$HOME/||")
 alias ssh="ssh -Y"
 alias agent="eval $(ssh-agent -s)"
 alias vol+='pactl set-sink-volume @DEFAULT_SINK@ +5%'
@@ -143,6 +143,14 @@ build() {
 unbuild() {
     rm -rf build
     echo "build directory removed"
+}
+
+# FZF
+
+f() {
+    local file
+    file=$(find / -type f 2>/dev/null | fzf)
+    [ -n "$file" ] && vim "$file"
 }
 
 echo $PWD && l
