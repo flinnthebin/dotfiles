@@ -110,12 +110,13 @@ compinit
 # Alias
 alias python=python3
 alias pip=pip3
+alias pyenv='source /opt/python/bin/activate'
 alias vim=nvim ~/$(pwd | sed "s|$HOME/||")
-alias ssh="ssh -Y"
-alias agent="eval $(ssh-agent -s)"
+alias ssh='ssh -Y'
+alias agent='eval $(ssh-agent -s)'
 alias vol+='pactl set-sink-volume @DEFAULT_SINK@ +5%'
 alias vol-='pactl set-sink-volume @DEFAULT_SINK@ -5%'
-
+alias format='find . \( -iname "*.h" -o -iname "*.cpp" -o -iname "*.hpp" \) | xargs clang-format -i'
 # PATH
 prependPath() {
     if [[ "$PATH" != *"$1"* ]]; then
