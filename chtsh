@@ -29,7 +29,7 @@ Commands:
   query                 After selecting, launch a text input to query question (i.e. go/ "open a file")
 
 Tmux Launch Binding:
-bind-key i run-shell "tmux neww ~/git/fuzzy-sheets/chtfzf.sh -t"
+bind-key i run-shell "tmux neww /usr/bin/chtsh -t"
 
 EOF
 }
