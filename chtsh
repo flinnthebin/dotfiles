@@ -1,0 +1,167 @@
+#!/usr/bin/env zsh
+
+if [[ -n "${ZSH_VERSION:-}" ]]; then
+    SCRIPT_PATH="${0:A}"
+elif [[ -n "${BASH_VERSION:-}" ]]; then
+    SCRIPT_PATH="${BASH_SOURCE[0]}"
+else
+    echo "Unsupported shell. This script requires bash or zsh."
+    exit 1
+fi
+
+set -euf -o pipefail
+CACHE_DIR="${HOME}/.local/share/chtsh"
+openMode="zsh"
+
+function usage {
+    cat <<EOF
+Usage: $(basename "$SCRIPT_PATH") [OPTIONS] [COMMAND] [ARGS]
+
+Interact with cht.sh service using fzf
+
+Options:
+  -t          Open results in a new tmux window. If not set, results will be opened using less in the current shell.
+  -h, --help  Show this help message and exit.
+
+Commands:
+  sync                  Cache main :list and enable preview caching
+  preview <sheet>       Preview a sheet (and cache it if sync has run)
+  query                 After selecting, launch a text input to query question (i.e. go/ "open a file")
+
+Tmux Launch Binding:
+bind-key i run-shell "tmux neww ~/git/fuzzy-sheets/chtfzf.sh -t"
+
+EOF
+}
+
+# Check for help option
+if [[ "$@" =~ (^| )(-h|--help)( |$) ]]; then
+    usage
+    exit 0
+fi
+
+function main {
+    # Read Command Line Arguments
+    for i in "$@"; do
+        case "$i" in
+            -t) openMode="tmux"; shift;;
+            sync) syncSheetList;;
+            query) shift; query $*;;
+            preview) shift; cachePreview "$*";;
+            *) ;; # Do nothing if no matches
+        esac
+    done
+
+    search="$(searchMain)"
+    pushd -n "$search" > /dev/null 2>&1
+    if [[ "${search: -1}" != "/" ]]; then
+        openSheet "$search"
+        exit
+    fi
+
+    while :; do # do while
+        search=$(curl -sg "cht.sh/$(getPath):list" | 
+            grep -v ":list" | 
+            fzf --bind "ctrl-d:print-query" --preview="${BASH_SOURCE[0]} preview "$(getPath){}"")
+
+        if [[ "$search" == "" ]]; then # go up a level on ctrl-d
+            popd -n > /dev/null 2>&1
+            if [[ $? != 0 ]]; then
+                break
+            fi
+            continue
+        fi
+        [[ "${search: -1}" == "/" ]] || break # exit condition
+        pushd -n "$search" > /dev/null 2>&1
+    done
+    
+    if [[ "$search" == "" ]]; then
+        main
+        exit
+    fi
+    echo "opening $(getPath)$search"
+    openSheet "$(getPath)$search"
+}
+
+function getPath {
+    echo "$(dirs -p | tail -n +2 | sed 's/.$//' | tac | tr '\n' '/')"
+}
+
+function openSheet {
+    if [[ "$1" == "" ]]; then exit; fi # Exit if empty string
+    case "$openMode" in
+        tmux) tmux neww bash -c "curl -sg "cht.sh/$*" | less -R";;
+        bash) curl -sg "cht.sh/$*" | less -R;;
+        *) echo "Unknown openMode, set -t to use tmux, or no args to use bash directly"
+    esac
+}
+
+function searchMain {
+    if [ -f "$CACHE_DIR/main.list" ]; then
+        # Use cached list if it exists
+        echo "$(grep -v ":list" "$CACHE_DIR/main.list" | fzf --query="$*" --preview="${SCRIPT_PATH} preview '{}'")"
+    else
+        echo "$(curl -sg "cht.sh/:list" | grep -v ":list" | fzf --query="$*" --preview="${SCRIPT_PATH} preview '{}'")"
+    fi
+}
+
+function query {
+    search="$(searchMain)"
+    read -rp "query: " queryInput
+    queryInput=$(tr ' ' '+' <<< "$queryInput")
+    if [[ "$queryInput" == "" ]]; then
+        openSheet "$(echo "$search")"
+        exit
+    fi
+
+    if [[ "${search: -1}" != "/" ]]; then
+        openSheet "$search/$queryInput"
+    else
+        openSheet "$search$queryInput"
+    fi
+    
+    exit
+}
+
+function syncSheetList {
+    [ ! -d "$CACHE_DIR" ] && mkdir -p "$CACHE_DIR"
+    printf "Saving main.list to %s\nDon't forget to sync in the future :)\n" "$CACHE_DIR"
+    curl "cht.sh/:list" > "$CACHE_DIR/main.list"
+    printf "done.\n"
+    exit
+}
+
+function cachePreview {
+    # Hopefully avoid really bad situations
+    if [[ "$*" == "" ]]; then exit; fi
+    if [[ "$*" == "/" ]]; then exit; fi
+
+    # Just use curl directly if we don't have a cache directory (haven't done sync yet)
+    if [ ! -d "$CACHE_DIR" ]; then
+       curl -sg "cht.sh/$*"
+       exit
+    fi
+
+    # Exists in cache
+    if [ -f "$CACHE_DIR/$*.sheet" ]; then
+        cat "$CACHE_DIR/$*.sheet"
+        exit
+    fi
+
+    # Make subdirectory structure to match preview
+    SUB_DIR="$(dirname "$CACHE_DIR/$*.sheet")"
+    [ ! -d  "$SUB_DIR" ] && mkdir -p "$SUB_DIR"
+    # sheet with status code as last line
+    sheet="$(curl -sg -w "%{http_code}" "cht.sh/$*")"
+    statusCode="$(tail -n1 <<< "$sheet")"
+    sheet="$(sed '$d' <<< "$sheet")" # Remove status code from output
+    if [[ "$statusCode" == "200" ]]; then
+        tee "$CACHE_DIR/$*.sheet" <<< "$sheet"
+    else
+        # Don't cache error page
+        printf "Sorry, cht.sh returned non 200 status code (error):\n%s" "$sheet"
+    fi
+    exit
+}
+
+main $@ # Pass CLI args to main 
