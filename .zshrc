@@ -113,7 +113,6 @@ alias pip=pip3
 alias pyenv='source /opt/python/bin/activate'
 alias vim=nvim ~/$(pwd | sed "s|$HOME/||")
 alias ssh='ssh -Y'
-alias agent='eval $(ssh-agent -s)'
 alias vol+='pactl set-sink-volume @DEFAULT_SINK@ +5%'
 alias vol-='pactl set-sink-volume @DEFAULT_SINK@ -5%'
 alias format='find . \( -iname "*.h" -o -iname "*.cpp" -o -iname "*.hpp" \) | xargs clang-format -i'
@@ -131,6 +130,25 @@ appendPath() {
 }
 
 appendPath "/opt/go/bin"
+appendPath "/snap/bin"
+
+# AGENT
+function agent() {
+    eval "$(ssh-agent -s)"
+    if [ -d ~/.ssh/private/ ]; then
+        echo "Select a key to add:"
+        select key in ~/.ssh/private/*; do
+            if [ -n "$key" ]; then
+                ssh-add "$key"
+                break
+            else
+                echo "Invalid selection. Please try again."
+            fi
+        done
+    else
+        echo "~/.ssh/private/ directory does not exist."
+    fi
+}
 
 # BUILD
 build() {
