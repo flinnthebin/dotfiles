@@ -25,7 +25,7 @@ function directory() {
 # git
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$(tput setaf 204)%}[";
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$(tput sgr0)%} ";
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$(tput setaf 223)%}%{$(tput setaf 204)%}]";
+ZSH_THEME_GIT_PROMPT_DIRTY=" %{$(tput setaf 223)%}%{$(tput setaf 204)%} ]";
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$(tput setaf 204)%}]";
 
 function update_git_status() {
