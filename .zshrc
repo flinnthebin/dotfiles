@@ -126,7 +126,7 @@ fi
 # Alias
 alias python=python3
 alias pip=pip3
-alias pyenv='source /opt/python/bin/activate'
+alias pyenv='source ~/.python/bin/activate'
 alias vim=nvim ~/$(pwd | sed "s|$HOME/||")
 alias ssh='ssh -Y'
 alias vol+='pactl set-sink-volume @DEFAULT_SINK@ +5%'
