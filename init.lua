@@ -548,7 +548,7 @@ require("lazy").setup({
 				zls = {},
 				clangd = {},
 				gopls = {},
-				-- pyright = {},
+				pylyzer = {},
 				-- rust_analyzer = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
 				--
@@ -993,10 +993,16 @@ require("lazy").setup({
 
 			require("dapui").setup()
 
+			local dap = require("dap")
+			local ui = require("dapui")
+
+			require("dapui").setup()
+
 			dap.adapters.cpp = {
 				id = "cpp",
 				type = "executable",
-				command = vim.fn.stdpath("data") .. "/mason/bin/OpenDebugAD7",
+				command = "gdb",
+				args = { "-i", "dap" },
 			}
 
 			dap.configurations.cpp = {
@@ -1005,14 +1011,10 @@ require("lazy").setup({
 					type = "cpp",
 					request = "launch",
 					program = function()
-						local input = ""
-						vim.ui.input({
-							prompt = "Path to executable: ",
-							default = vim.fn.getcwd() .. "/",
-						}, function(user_input)
-							input = user_input
-						end)
-						return input
+						local file_path = vim.fn.expand("%:p")
+						local executable_path = file_path:gsub("%.cpp$", "")
+						os.execute("g++ " .. file_path .. " -o " .. executable_path)
+						return executable_path
 					end,
 					cwd = "${workspaceFolder}",
 					stopOnEntry = false,
@@ -1046,7 +1048,7 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader><space>rc", dap.step_back)
 			vim.keymap.set("n", "<leader><space>run", dap.restart)
 
-			-- Eval var under cursor
+			-- Evaluate variable under cursor
 			vim.keymap.set("n", "<leader><space>?", function()
 				ui.eval(nil, { context = "hover", width = 50, height = 20, enter = true })
 			end)
