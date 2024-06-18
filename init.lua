@@ -990,16 +990,8 @@ require("lazy").setup({
 		config = function()
 			local dap = require("dap")
 			local ui = require("dapui")
-
 			require("dapui").setup()
-
-			local dap = require("dap")
-			local ui = require("dapui")
-
-			require("dapui").setup()
-
-			dap.adapters.cpp = {
-				id = "cpp",
+			dap.adapters.gdb = {
 				type = "executable",
 				command = "gdb",
 				args = { "-i", "dap" },
@@ -1008,16 +1000,13 @@ require("lazy").setup({
 			dap.configurations.cpp = {
 				{
 					name = "Launch",
-					type = "cpp",
+					type = "gdb",
 					request = "launch",
 					program = function()
-						local file_path = vim.fn.expand("%:p")
-						local executable_path = file_path:gsub("%.cpp$", "")
-						os.execute("g++ " .. file_path .. " -o " .. executable_path)
-						return executable_path
+						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
 					end,
 					cwd = "${workspaceFolder}",
-					stopOnEntry = false,
+					stopAtBeginningOfMainSubprogram = false,
 					args = {},
 					runInTerminal = true,
 				},
@@ -1047,7 +1036,6 @@ require("lazy").setup({
 			vim.keymap.set("n", "<leader><space>f", dap.step_out)
 			vim.keymap.set("n", "<leader><space>rc", dap.step_back)
 			vim.keymap.set("n", "<leader><space>run", dap.restart)
-
 			-- Evaluate variable under cursor
 			vim.keymap.set("n", "<leader><space>?", function()
 				ui.eval(nil, { context = "hover", width = 50, height = 20, enter = true })
