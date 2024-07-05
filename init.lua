@@ -223,6 +223,36 @@ function InsertDebugTag()
 	vim.cmd("normal! j")
 end
 
+-- Snips
+
+--
+
+-- Define a function to insert the class snippet and adjust cursor position
+function InsertClassSnippet()
+	-- Insert the content of the snippet file
+	vim.cmd("r ~/.config/nvim/snips/cpp/class.cpp")
+
+	-- Remove any leading empty lines (if any)
+	local cursor = vim.api.nvim_win_get_cursor(0)
+	if cursor[1] > 1 then
+		local prev_line = vim.api.nvim_buf_get_lines(0, cursor[1] - 2, cursor[1] - 1, false)[1]
+		if prev_line == "" then
+			vim.api.nvim_buf_set_lines(0, cursor[1] - 2, cursor[1] - 1, false, {})
+		end
+	end
+
+	-- Move the cursor to ClassName
+	vim.cmd("normal! 6jw")
+end
+
+-- Create a command to run the function
+vim.api.nvim_create_user_command("InsertClass", InsertClassSnippet, {})
+
+-- Map the <leader>class to the InsertClass command
+vim.api.nvim_set_keymap("n", "<leader>class", ":InsertClass<CR>", { noremap = true, silent = true })
+
+--
+
 -- Lazy Plugins
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -506,8 +536,14 @@ require("lazy").setup({
 			nvim_lsp.zls.setup(zls_config)
 
 			-- Add clangd setup for C++
-			local clangd_cmd =
-				{ "clangd", "--clang-tidy", "--completion-style=detailed", "--header-insertion=never", "--std=c++23" }
+			local clangd_cmd = {
+				"/usr/local/clang+llvm-18/bin/clangd",
+				"clangd",
+				"--clang-tidy",
+				"--completion-style=detailed",
+				"--header-insertion=never",
+				"--std=c++23",
+			}
 			local clangd_config = {
 				cmd = clangd_cmd,
 				filetypes = { "c", "cpp", "objc", "objcpp" },
