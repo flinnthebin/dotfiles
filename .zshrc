@@ -124,6 +124,7 @@ elif [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
 fi
 
 # Alias
+alias clang++='clang++ -v -std=c++2b -stdlib=libc++ -I/usr/local/clang+llvm-18/include/c++/v1 -L/usr/local/clang+llvm-18/lib/x86_64-unknown-linux-gnu'
 alias python=python3
 alias pip=pip3
 alias pyenv='source ~/.python/bin/activate'
@@ -145,8 +146,12 @@ appendPath() {
     fi
 }
 
+prependPath "/usr/local/clang+llvm-18/bin"
+appendPath "/usr/local/clang+llvm-18/lib"
 appendPath "/opt/go/bin"
 appendPath "/snap/bin"
+
+export LD_LIBRARY_PATH=/usr/local/clang+llvm-18/lib/x86_64-unknown-linux-gnu:$LD_LIBRARY_PATH
 
 # AGENT
 function agent() {
