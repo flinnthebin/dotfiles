@@ -150,6 +150,7 @@ prependPath "/usr/local/clang+llvm-18/bin"
 appendPath "/usr/local/clang+llvm-18/lib"
 appendPath "/opt/go/bin"
 appendPath "/snap/bin"
+appendPath "/usr/share/platform-tools"
 
 export LD_LIBRARY_PATH=/usr/local/clang+llvm-18/lib/x86_64-unknown-linux-gnu:$LD_LIBRARY_PATH
 
@@ -193,8 +194,39 @@ f() {
     [ -n "$file" ] && vim "$file"
 }
 
-echo $PWD && l
+# STREAM
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+miccheck() {
+    arecord -vvv -f dat /dev/null
+}
+
+function stream() {
+  echo -n "Enter password to decrypt stream key: "
+  read -s password
+
+  stream_key=$(echo "$password" | openssl enc -aes-256-cbc -d -in ~/.ssh/stream_key.enc -pass stdin)
+
+  unset password
+
+  ffmpeg \
+    # xrandr
+    -thread_queue_size 512 -f x11grab -s 1920x1080 -framerate 30 -i :0.0+0,0 \
+    # v4l2-ctl --list-devices
+    -thread_queue_size 512 -f v4l2 -s 240x180 -framerate 30 -i /dev/video0 \
+    # arecord -l
+    -thread_queue_size 512 -f alsa -ac 1 -ar 48000 -sample_fmt s16 -i default -af "highpass=f=200,agate=threshold=-30dB" \
+    # 0.3 - colour similarity :0.3 - blend
+    -filter_complex "[1:v]chromakey=0x00ff00:0.3:0.3[ckout];[0:v][ckout] overlay=W-w-10:H-h-10" \
+    -c:v libx264 -preset veryfast -b:v 3000k -maxrate 3000k -bufsize 6000k \
+    -c:a aac -b:a 160k \
+    -probesize 10M \
+    -f flv rtmp://live.twitch.tv/app/$stream_key
+
+  unset stream_key
+}
+
+# SDKMAN
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+[ -f "/home/archer/.ghcup/env" ] && . "/home/archer/.ghcup/env" # ghcup-env
