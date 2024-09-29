@@ -124,7 +124,6 @@ elif [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
 fi
 
 # Alias
-alias clang++='clang++ -v -std=c++2b -stdlib=libc++ -I/usr/local/clang+llvm-18/include/c++/v1 -L/usr/local/clang+llvm-18/lib/x86_64-unknown-linux-gnu'
 alias python=python3
 alias pip=pip3
 alias pyenv='source ~/.python/bin/activate'
@@ -146,13 +145,13 @@ appendPath() {
     fi
 }
 
-prependPath "/usr/local/clang+llvm-18/bin"
-appendPath "/usr/local/clang+llvm-18/lib"
-appendPath "/opt/go/bin"
-appendPath "/snap/bin"
+prependPath "$HOME/.ghcup/bin"
+appendPath "~/.cabal/bin/xmonad"
 appendPath "/usr/share/platform-tools"
-
-export LD_LIBRARY_PATH=/usr/local/clang+llvm-18/lib/x86_64-unknown-linux-gnu:$LD_LIBRARY_PATH
+export GOROOT="/usr/local/go"
+export GOPATH="/usr/local/go/path"
+prependPath "$GOROOT/bin"
+prependPath "$GOPATH/bin"
 
 # AGENT
 function agent() {
@@ -225,8 +224,9 @@ function stream() {
   unset stream_key
 }
 
-# SDKMAN
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 [ -f "/home/archer/.ghcup/env" ] && . "/home/archer/.ghcup/env" # ghcup-env
+. "$HOME/.cargo/env"
+
+xrandr --output HDMI-1-1 --mode 1920x1080 --same-as eDP
+rm -rf Downloads

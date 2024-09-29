@@ -9,7 +9,7 @@ function real_time() {
 # login_info
 function login_info() {
     local color="%{$(tput setaf 183)%}";  # color in PROMPT need format in %{XXX%} which is not same with echo
-    local ip="$(hostname -I | awk '{print $1}')";
+    local ip="$(hostname -i | awk '{print $1}')";
     local color_reset="%{$(tput sgr0)%}";
     echo "${color}[%n@${ip}]${color_reset}";
 }
