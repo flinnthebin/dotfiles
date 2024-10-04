@@ -229,4 +229,3 @@ function stream() {
 . "$HOME/.cargo/env"
 
 xrandr --output HDMI-1-1 --mode 1920x1080 --same-as eDP
-rm -rf Downloads
