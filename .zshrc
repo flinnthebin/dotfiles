@@ -8,7 +8,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="flinnthebin"
+ZSH_THEME="rosepine"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -96,7 +96,7 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-# Rose-pine
+# Rose-pin
 # Directories to Pine (approximating #31748f)
 # Symlinks to Foam (approximating #9ccfd8)
 # .deb, .tar files to Iris (approximating #c4a7e7)
@@ -104,7 +104,7 @@ source $ZSH/oh-my-zsh.sh
 LS_COLORS='ex=1;38;5;152:di=1;38;5;24:ln=1;38;5;117:*.deb=1;38;5;218:*.tar=1;38;5;218:*.tgz=1;38;5;218:*.arj=1;38;5;218:*.taz=1;38;5;218:*.lzh=1;38;5;218:*.lzma=1;38;5;218:*.tlz=1;38;5;218:*.txz=1;38;5;218:*.zip=1;38;5;218:*.z=1;38;5;218:*.Z=1;38;5;218:*.dz=1;38;5;218:*.gz=1;38;5;218:*.lz=1;38;5;218:*.xz=1;38;5;218:*.bz2=1;38;5;218:*.bz=1;38;5;218:*.tbz=1;38;5;218:*.tbz2=1;38;5;218:*.tz=1;38;5;218:*.deb=1;38;5;218:*.rpm=1;38;5;218:*.jar=1;38;5;218:*.war=1;38;5;218:*.ear=1;38;5;218:*.sar=1;38;5;218:*.rar=1;38;5;218:*.ace=1;38;5;218:*.zoo=1;38;5;218:*.cpio=1;38;5;218:*.7z=1;38;5;218:*.rz=1;38;5;218:*.cab=1;38;5;218:*.jpg=1;38;5;183:*.jpeg=1;38;5;183:*.gif=1;38;5;183:*.bmp=1;38;5;183:*.pbm=1;38;5;183:*.pgm=1;38;5;183:*.ppm=1;38;5;183:*.tga=1;38;5;183:*.xbm=1;38;5;183:*.xpm=1;38;5;183:*.tif=1;38;5;183:*.tiff=1;38;5;183:*.png=1;38;5;183:*.svg=1;38;5;183:*.svgz=1;38;5;183:*.mng=1;38;5;183:*.pcx=1;38;5;183:*.mov=1;38;5;183:*.mpg=1;38;5;183:*.mpeg=1;38;5;183:*.m2v=1;38;5;183:*.mkv=1;38;5;183:*.webm=1;38;5;183:*.ogm=1;38;5;183:*.mp4=1;38;5;183:*.m4v=1;38;5;183:*.mp4v=1;38;5;183:*.vob=1;38;5;183:*.qt=1;38;5;183:*.nuv=1;38;5;183:*.wmv=1;38;5;183:*.asf=1;38;5;183:*.rm=1;38;5;183:*.rmvb=1;38;5;183:*.flc=1;38;5;183:*.avi=1;38;5;183:*.fli=1;38;5;183:*.flv=1;38;5;183:*.gl=1;38;5;183:*.dl=1;38;5;183:*.xcf=1;38;5;183:*.xwd=1;38;5;183:*.yuv=1;38;5;183:*.cgm=1;38;5;183:*.emf=1;38;5;183:*.ogv=1;38;5;183:*.ogx=1;38;5;183:*.aac=1;38;5;183:*.au=1;38;5;183:*.flac=1;38;5;183:*.m4a=1;38;5;183:*.mid=1;38;5;183:*.midi=1;38;5;183:*.mka=1;38;5;183:*.mp3=1;38;5;183:*.mpc=1;38;5;183:*.ogg=1;38;5;183:*.ra=1;38;5;183:*.wav=1;38;5;183:*.axa=1;38;5;183:*.oga=1;38;5;183:*.spx=1;38;5;183:*.xspf=1;38;5;183:'
 
 # Autocomplete 
-setopt histignorealldups sharehistory
+setopt histignorealldups sharehistory incappendhistory histignoredups histfindnodups
 
 # Keep 5000 lines of history within the shell and save it to ~/.zsh_history:
 HISTSIZE=5000
@@ -132,6 +132,8 @@ alias ssh='ssh -Y'
 alias vol+='pactl set-sink-volume @DEFAULT_SINK@ +5%'
 alias vol-='pactl set-sink-volume @DEFAULT_SINK@ -5%'
 alias format='find . \( -iname "*.h" -o -iname "*.cpp" -o -iname "*.hpp" \) | xargs clang-format -i'
+alias get-headers="pacman -S $(pacman -Q | grep "^linux[0-9]* " | cut -d' ' -f1 | sed 's/$/-headers/')"
+
 # PATH
 prependPath() {
     if [[ "$PATH" != *"$1"* ]]; then
@@ -149,7 +151,7 @@ prependPath "$HOME/.ghcup/bin"
 appendPath "~/.cabal/bin/xmonad"
 appendPath "/usr/share/platform-tools"
 export GOROOT="/usr/local/go"
-export GOPATH="/usr/local/go/path"
+export GOPATH="$HOME/.go"
 prependPath "$GOROOT/bin"
 prependPath "$GOPATH/bin"
 
@@ -191,6 +193,14 @@ f() {
     local file
     file=$(find / -type f 2>/dev/null | fzf)
     [ -n "$file" ] && vim "$file"
+}
+
+# CPPDOC
+
+cppdoc() {
+    local file
+    file=$(find ~/.cppdoc/ -type f 2>/dev/null | fzf)
+    [ -n "$file" ] && mdcat "$file"
 }
 
 # STREAM
