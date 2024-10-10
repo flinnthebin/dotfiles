@@ -96,7 +96,9 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-# Rose-pin
+export BROWSER=librewolf
+
+# Rose-pine
 # Directories to Pine (approximating #31748f)
 # Symlinks to Foam (approximating #9ccfd8)
 # .deb, .tar files to Iris (approximating #c4a7e7)
