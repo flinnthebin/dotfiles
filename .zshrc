@@ -1,3 +1,5 @@
+# Amazon Q pre block. Keep at the top of this file.
+[[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.pre.zsh"
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -189,14 +191,6 @@ unbuild() {
     echo "build directory removed"
 }
 
-# FZF
-
-f() {
-    local file
-    file=$(find / -type f 2>/dev/null | fzf)
-    [ -n "$file" ] && vim "$file"
-}
-
 # CPPDOC
 
 cppdoc() {
@@ -241,3 +235,6 @@ function stream() {
 . "$HOME/.cargo/env"
 
 xrandr --output HDMI-1-1 --mode 1920x1080 --same-as eDP
+
+# Amazon Q post block. Keep at the bottom of this file.
+[[ -f "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/.local/share/amazon-q/shell/zshrc.post.zsh"
