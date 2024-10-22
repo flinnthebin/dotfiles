@@ -199,6 +199,13 @@ cppdoc() {
     [ -n "$file" ] && mdcat "$file"
 }
 
+# AUDIO
+airpods() {
+    pulseaudio -k
+    pulseaudio --start
+    bluetoothctl connect "B0:3F:64:21:7E:D7"
+}
+
 # STREAM
 
 miccheck() {
