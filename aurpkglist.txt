@@ -1,0 +1,2 @@
+librewolf-bin 130.0.1-1
+tcllib 1.21-1
