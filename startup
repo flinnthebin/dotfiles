@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+open_on_workspace() {
+  workspace=$1
+  command=$2
+
+  i3-msg workspace "$workspace"
+  $command &
+  sleep 1
+}
+
+# Launch applications on their respective workspaces
+open_on_workspace $ws1 "alacritty"
+open_on_workspace $ws2 "firefox"
+open_on_workspace $ws3 "discord"
+open_on_workspace $ws4 "vokoscreenNG"
+open_on_workspace $ws5 "kdenlive"
+open_on_workspace $ws6 "gimp"
+open_on_workspace $ws7 "vlc"
