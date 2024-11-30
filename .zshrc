@@ -93,7 +93,7 @@ source $ZSH/oh-my-zsh.sh
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-export BROWSER=librewolf
+export BROWSER=firefox
 
 # Rose-pine
 # Directories to Pine (approximating #31748f)
@@ -232,8 +232,12 @@ function stream() {
   unset stream_key
 }
 
+# antikris
+antikris() {
+    xrandr --output eDP --gamma 1:1:1 --brightness 1
+}
 
 [ -f "/home/archer/.ghcup/env" ] && . "/home/archer/.ghcup/env" # ghcup-env
 . "$HOME/.cargo/env"
 
-xrandr --output HDMI-1-1 --mode 1920x1080 --same-as eDP
+xrandr --output HDMI-1-0 --mode 1920x1080 --same-as eDP
