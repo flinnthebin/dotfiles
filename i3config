@@ -204,11 +204,12 @@ bindsym $mod+Shift+equal move container to workspace $wse; workspace $wse
 assign [class="ghidra-Ghidra"] $wsg
 assign [class="iaito"] $wsg
 assign [class="Alacritty"] $ws1
-assign [class="bless"] $ws2
+assign [class="KCachegrind"] $ws2
 assign [class="Chromium-browser"] $ws3
 assign [class="burp-StartBurp"] $ws4
 assign [class="wireshark"] $ws5
 assign [class="nheko"] $ws6
+assign [class="xpdf"] $ws6
 assign [class="firefox"] $ws7
 assign [class="discord"] $ws8
 assign [class="vokoscreenNG"] $ws9
@@ -351,7 +352,7 @@ client.placeholder      $xcolor7        $xcolor7    $xcolor14
 bar {
     i3bar_command i3bar
     status_command i3status
-    mode dock
+    mode hide
     position top
     strip_workspace_numbers yes
     font pango:0xProto Nerd Font 12
