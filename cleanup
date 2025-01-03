@@ -1,18 +1,12 @@
 #!/usr/bin/env sh
 
-if ! command -v stow >/dev/null 2>&1; then
-    echo "Error: GNU Stow is not installed. Please install it and try again."
-    exit 1
-fi
-
 cd "$DOTFILES" || { echo "Error: Unable to navigate to $DOTFILES"; exit 1; }
 
 # Split STOW_FOLDERS into an array
 IFS=',' read -r -a folders <<< "$STOW_FOLDERS"
 
 for folder in "${folders[@]}"; do
-    echo "Stowing $folder..."
-    stow -D "$folder" 2>/dev/null
-    stow "$folder"
+    echo "Removing $folder..."
+    stow -D "$folder"
 done
 

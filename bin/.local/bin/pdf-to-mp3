@@ -1,0 +1,129 @@
+#!/usr/bin/env sh
+
+set -e
+
+TEXT_MODE=false
+DIR_MODE=false
+DIR_PATH=""
+PDF_FILE=""
+TXT_SOURCE=""
+
+while getopts ":td" opt; do
+  case $opt in
+    t) TEXT_MODE=true ;;
+    d) DIR_MODE=true ;;
+    \?) echo "Invalid option: -$OPTARG" 1>&2; exit 1 ;;
+  esac
+done
+shift $((OPTIND -1))
+
+if [ "$DIR_MODE" = true ]; then
+  if [ $# -gt 0 ] && [ "${1#-}" = "$1" ]; then
+    DIR_PATH="$1"
+    shift
+  else
+    DIR_PATH=".audiobook"
+    fi
+fi
+
+if [ "$TEXT_MODE" = true ] && [ "$DIR_MODE" = true ]; then
+  echo "Error: Cannot use -t and -d together."
+  exit 1
+fi
+
+if [ "$DIR_MODE" = false ] && [ "$TEXT_MODE" = false ]; then
+  if [ $# -lt 1 ]; then
+    echo "Usage: $0 <PDF file>"
+    exit 1
+  fi
+  PDF_FILE="$1"
+  if [ ! -f "$PDF_FILE" ]; then
+    echo "File not found: $PDF_FILE"
+    exit 1
+  fi
+elif [ "$TEXT_MODE" = true ]; then
+  if [ $# -lt 1 ]; then
+    echo "Usage: $0 -t <TXT file>"
+    exit 1
+  fi
+  TXT_SOURCE="$1"
+  if [ ! -f "$TXT_SOURCE" ]; then
+    echo "File not found: $TXT_SOURCE"
+    exit 1
+  fi
+fi
+
+if [ "$DIR_MODE" = true ]; then
+  if [ -n "$DIR_PATH" ] && [ "$DIR_PATH" != ".audiobook" ]; then
+    BASENAME="$(basename "$DIR_PATH")"
+  else
+    BASENAME="final"
+  fi
+else
+  if [ "$TEXT_MODE" = true ]; then
+    BASENAME="${TXT_SOURCE%.txt}"
+  else
+    BASENAME="${PDF_FILE%.pdf}"
+  fi
+fi
+
+TXT_FILE="${BASENAME}.txt"
+FINAL_AUDIO="${BASENAME}.mp3"
+WORKDIR=".audiobook"
+
+if [ "$DIR_MODE" = true ]; then
+  WORKDIR="$DIR_PATH"
+fi
+
+if [ "$DIR_MODE" = false ]; then
+  mkdir -p "$WORKDIR"
+
+  if [ "$TEXT_MODE" = false ]; then
+    pdftotext "$PDF_FILE" "$TXT_FILE"
+  else
+    cp "$TXT_SOURCE" "$WORKDIR/input.txt"
+    TXT_FILE="$WORKDIR/input.txt"
+  fi
+
+  split -l 1000 "$TXT_FILE" "${WORKDIR}/chunk_"
+
+  parallel -j8 text2wave '{}' -o '{}.wav' -eval '\(voice_cmu_us_slt_cg\)' ::: "${WORKDIR}/chunk_"*
+
+  ls "${WORKDIR}"/chunk_*.wav | parallel -j8 ffmpeg -i {} -filter:a "atempo=1.25" -vn -c:a libmp3lame -b:a 192k {}.mp3
+
+  MP3_LIST="${WORKDIR}/mp3_files.txt"
+  : > "$MP3_LIST"
+
+  for CHUNK_MP3 in "${WORKDIR}"/chunk_*.wav.mp3; do
+    echo "file '$(pwd)/${CHUNK_MP3}'" >> "$MP3_LIST"
+  done
+else
+  if [ ! -d "$WORKDIR" ]; then
+    echo "Error: Work directory $WORKDIR does not exist. Cannot resume."
+    exit 1
+  fi
+
+  MP3_LIST="${WORKDIR}/mp3_files.txt"
+  if [ ! -f "$MP3_LIST" ]; then
+  echo "Error: $MP3_LIST does not exist. Cannot resume."
+  exit 1
+  fi
+fi
+
+COMBINED_WAV="${WORKDIR}/combined.wav"
+
+ffmpeg -f concat -safe 0 -i "$MP3_LIST" -c copy "$FINAL_AUDIO"
+
+if [ "$DIR_MODE" = false ]; then
+  echo "Cleaning up $WORKDIR"
+  rm -rf "$WORKDIR"
+  if [ "$TEXT_MODE" = false ]; then
+    rm "$TXT_FILE"
+  else
+    if [ -f "$WORKDIR/input.txt" ]; then
+      rm "$WORKDIR/input.txt"
+    fi
+  fi
+fi
+
+echo "$FINAL_AUDIO successfully generated!"

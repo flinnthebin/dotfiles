@@ -11,9 +11,9 @@ vim.opt.encoding = "utf-8"
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.wrap = true
-vim.opt.numberwidth = 4
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
+vim.opt.numberwidth = 2
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
 vim.opt.showmatch = true
 vim.opt.matchtime = 3
@@ -33,7 +33,7 @@ vim.opt.smartcase = true
 vim.opt.signcolumn = "yes"
 vim.opt.updatetime = 250
 vim.opt.timeoutlen = 300
-vim.opt.scrolloff = 23
+-- vim.opt.scrolloff = 23
 -- Window Splits
 vim.opt.splitright = true
 vim.opt.splitbelow = true
@@ -417,6 +417,27 @@ require("lazy").setup({
 		end,
 	},
 
+	-- LSP Inlay Hints
+	{
+		"felpafel/inlay-hint.nvim",
+		event = "LspAttach",
+		config = function()
+			require("inlay-hint").setup()
+			-- Define a toggle function
+			vim.keymap.set("n", "<leader>ih", function()
+				if require("inlay-hint").is_enabled() then
+					-- Disable inlay hints
+					vim.lsp.buf.inlay_hint(0, false)
+					print("Inlay hints disabled")
+				else
+					-- Enable inlay hints
+					vim.lsp.buf.inlay_hint(0, true)
+					print("Inlay hints enabled")
+				end
+			end, { desc = "Toggle inlay hints" })
+		end,
+	},
+
 	{ -- LSP Configuration
 		"neovim/nvim-lspconfig",
 		dependencies = {
@@ -535,10 +556,38 @@ require("lazy").setup({
 			-- Enable ZLS
 			nvim_lsp.zls.setup(zls_config)
 
+			nvim_lsp.pylyzer.setup({
+				cmd = { "/home/archer/.python/bin/pylyzer", "--server" },
+				settings = {
+					python = {
+						analysis = {
+							diagnosticMode = "workspace",
+							useLibraryCodeForTypes = true,
+						},
+					},
+				},
+			})
+
+			require("lspconfig").pylsp.setup({
+				settings = {
+					pylsp = {
+						plugins = {
+							autopep8 = {
+								enabled = true,
+								line_length = 120,
+							},
+							pycodestyle = {
+								enabled = true,
+								maxLineLength = 120,
+							},
+						},
+					},
+				},
+			})
 			-- Add clangd setup for C++
 			local clangd_cmd = {
-				"/usr/local/clang+llvm-18/bin/clangd",
 				"clangd",
+				"--enable-config",
 				"--clang-tidy",
 				"--completion-style=detailed",
 				"--header-insertion=never",
@@ -546,31 +595,21 @@ require("lazy").setup({
 			}
 			local clangd_config = {
 				cmd = clangd_cmd,
+				capabilities = capabilities,
 				filetypes = { "c", "cpp", "objc", "objcpp" },
 				root_dir = require("lspconfig").util.root_pattern("compile_commands.json", "compile_flags.txt", ".git"),
 			}
 			nvim_lsp.clangd.setup(clangd_config)
-			-- Function to toggle clangd LSP features
+			-- Function to toggle Clangd LSP features
 			local clangd_enabled = true
 			function ToggleClangdFeatures()
 				clangd_enabled = not clangd_enabled
-				local clients = vim.lsp.get_active_clients()
-				for _, client in ipairs(clients) do
-					if client.name == "clangd" then
-						if clangd_enabled then
-							client.config.capabilities.textDocument.completion =
-								{ completionItem = { snippetSupport = true } }
-							client.config.capabilities.textDocument.publishDiagnostics = true
-							vim.diagnostic.enable()
-							print("Clangd LSP features enabled")
-						else
-							client.config.capabilities.textDocument.completion = nil
-							client.config.capabilities.textDocument.publishDiagnostics = false
-							vim.diagnostic.disable()
-							print("Clangd LSP features disabled")
-						end
-						client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
-					end
+				if clangd_enabled then
+					vim.diagnostic.enable()
+					print("Clangd LSP features enabled")
+				else
+					vim.diagnostic.disable()
+					print("Clangd LSP features disabled")
 				end
 			end
 			-- Keymap to toggle clangd LSP features
@@ -585,6 +624,7 @@ require("lazy").setup({
 				clangd = {},
 				gopls = {},
 				pylyzer = {},
+				pylsp = {},
 				-- rust_analyzer = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
 				--
@@ -793,14 +833,29 @@ require("lazy").setup({
 	-- Colorschemes
 	{
 		"rose-pine/neovim",
-		name = "rose-pine",
-		priority = 1000,
+		--	name = "rose-pine",
+		--	priority = 1000,
+		--	config = function()
+		--		vim.cmd.colorscheme("rose-pine")
+		--		vim.cmd.hi("Comment gui=none")
+		--	end,
+	},
+	{
+		"folke/tokyonight.nvim",
+		--  name = "tokyonight",
+		--	priority = 1000,
+		--	config = function()
+		--		vim.cmd.colorscheme("tokyonight-storm")
+		--		vim.cmd.hi("Comment gui=none")
+		--	end,
+	},
+	{
+		"rebelot/kanagawa.nvim",
 		config = function()
-			vim.cmd.colorscheme("rose-pine")
+			vim.cmd.colorscheme("kanagawa-dragon")
 			vim.cmd.hi("Comment gui=none")
 		end,
 	},
-	{ "folke/tokyonight.nvim" },
 	-- Indentline
 	{
 		"lukas-reineke/indent-blankline.nvim",
@@ -1014,86 +1069,86 @@ require("lazy").setup({
 		end,
 	},
 
-	{ -- Debugger
-		"mfussenegger/nvim-dap",
-		dependencies = {
-			"git@github.com:leoluz/nvim-dap-go.git",
-			"rcarriga/nvim-dap-ui",
-			"theHamsta/nvim-dap-virtual-text",
-			"nvim-neotest/nvim-nio",
-			"williamboman/mason.nvim",
-		},
-		config = function()
-			local dap = require("dap")
-			local ui = require("dapui")
-			require("dapui").setup()
-			dap.adapters.gdb = {
-				type = "executable",
-				command = "gdb",
-				args = { "-i", "dap" },
-			}
-
-			dap.configurations.cpp = {
-				{
-					name = "Launch",
-					type = "gdb",
-					request = "launch",
-					program = function()
-						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-					end,
-					cwd = "${workspaceFolder}",
-					stopAtBeginningOfMainSubprogram = false,
-					args = {},
-					runInTerminal = true,
-				},
-			}
-
-			require("nvim-dap-virtual-text").setup({
-				display_callback = function(variable)
-					local name = string.lower(variable.name)
-					local value = string.lower(variable.value)
-					if name:match("secret") or name:match("api") or value:match("secret") or value:match("api") then
-						return "*****"
-					end
-
-					if #variable.value > 15 then
-						return " " .. string.sub(variable.value, 1, 15) .. " ... "
-					end
-
-					return " " .. variable.value
-				end,
-			})
-
-			vim.keymap.set("n", "<leader><space>b", dap.toggle_breakpoint)
-			vim.keymap.set("n", "<leader><space>tbc", dap.run_to_cursor)
-			vim.keymap.set("n", "<leader><space>c", dap.continue)
-			vim.keymap.set("n", "<leader><space>s", dap.step_into)
-			vim.keymap.set("n", "<leader><space>n", dap.step_over)
-			vim.keymap.set("n", "<leader><space>f", dap.step_out)
-			vim.keymap.set("n", "<leader><space>rc", dap.step_back)
-			vim.keymap.set("n", "<leader><space>run", dap.restart)
-			-- Evaluate variable under cursor
-			vim.keymap.set("n", "<leader><space>?", function()
-				ui.eval(nil, { context = "hover", width = 50, height = 20, enter = true })
-			end)
-
-			dap.listeners.before.attach.dapui_config = function()
-				ui.open()
-			end
-
-			dap.listeners.before.launch.dapui_config = function()
-				ui.open()
-			end
-
-			dap.listeners.before.event_terminated.dapui_config = function()
-				ui.close()
-			end
-
-			dap.listeners.before.event_exited.dapui_config = function()
-				ui.close()
-			end
-		end,
-	},
+	--{ -- Debugger
+	--	"mfussenegger/nvim-dap",
+	--	dependencies = {
+	--		"git@github.com:leoluz/nvim-dap-go.git",
+	--		"rcarriga/nvim-dap-ui",
+	--		"theHamsta/nvim-dap-virtual-text",
+	--		"nvim-neotest/nvim-nio",
+	--		"williamboman/mason.nvim",
+	--	},
+	--	config = function()
+	--		local dap = require("dap")
+	--		local ui = require("dapui")
+	--		require("dapui").setup()
+	--		dap.adapters.gdb = {
+	--			type = "executable",
+	--			command = "gdb",
+	--			args = { "-i", "dap" },
+	--		}
+	--
+	--		dap.configurations.cpp = {
+	--			{
+	--				name = "Launch",
+	--				type = "gdb",
+	--				request = "launch",
+	--				program = function()
+	--					return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+	--				end,
+	--				cwd = "${workspaceFolder}",
+	--				stopAtBeginningOfMainSubprogram = false,
+	--				args = {},
+	--				runInTerminal = true,
+	--			},
+	--		}
+	--
+	--		require("nvim-dap-virtual-text").setup({
+	--			display_callback = function(variable)
+	--				local name = string.lower(variable.name)
+	--				local value = string.lower(variable.value)
+	--				if name:match("secret") or name:match("api") or value:match("secret") or value:match("api") then
+	--					return "*****"
+	--				end
+	--
+	--				if #variable.value > 15 then
+	--					return " " .. string.sub(variable.value, 1, 15) .. " ... "
+	--				end
+	--
+	--				return " " .. variable.value
+	--			end,
+	--		})
+	--
+	--		vim.keymap.set("n", "<leader><space>b", dap.toggle_breakpoint)
+	--		vim.keymap.set("n", "<leader><space>tbc", dap.run_to_cursor)
+	--		vim.keymap.set("n", "<leader><space>c", dap.continue)
+	--		vim.keymap.set("n", "<leader><space>s", dap.step_into)
+	--		vim.keymap.set("n", "<leader><space>n", dap.step_over)
+	--		vim.keymap.set("n", "<leader><space>f", dap.step_out)
+	--		vim.keymap.set("n", "<leader><space>rc", dap.step_back)
+	--		vim.keymap.set("n", "<leader><space>run", dap.restart)
+	--		-- Evaluate variable under cursor
+	--		vim.keymap.set("n", "<leader><space>?", function()
+	--			ui.eval(nil, { context = "hover", width = 50, height = 20, enter = true })
+	--		end)
+	--
+	--		dap.listeners.before.attach.dapui_config = function()
+	--			ui.open()
+	--		end
+	--
+	--		dap.listeners.before.launch.dapui_config = function()
+	--			ui.open()
+	--		end
+	--
+	--		dap.listeners.before.event_terminated.dapui_config = function()
+	--			ui.close()
+	--		end
+	--
+	--		dap.listeners.before.event_exited.dapui_config = function()
+	--			ui.close()
+	--		end
+	--	end,
+	--},
 }, {
 	ui = {
 		icons = vim.g.have_nerd_font and {} or {

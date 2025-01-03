@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# f-blackarch
+# Find a program based on its BlackArch group name and launch it
+
+set -e
+
+groups=$(pacman -Sg | awk '{print $1}' | sort -u | grep '^blackarch')
+groupname=$(echo "$groups" | fzf --reverse --prompt="Select a BlackArch group: " --exact)
+
+tools=$(pacman -Sg "$groupname" | awk '{print $2}' | sort -u)
+tool_descriptions=$(pacman -Qi $tools 2>/dev/null | awk -v RS='' '/^Name/ {print $3}')
+
+selected_tool=$(echo "$tool_descriptions" | fzf --reverse --prompt="Select a tool in $groupname: " --exact)
+
+toolname=$(echo "$selected_tool" | awk -F':' '{print $1}' | xargs)
+
+if command -v "$toolname" >/dev/null 2>&1; then
+    "$toolname"
+else
+    echo "Error: $toolname is not installed or not in PATH."
+    exit 1
+fi
+

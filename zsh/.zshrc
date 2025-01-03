@@ -132,6 +132,14 @@ alias vol+='pactl set-sink-volume @DEFAULT_SINK@ +5%'
 alias vol-='pactl set-sink-volume @DEFAULT_SINK@ -5%'
 alias format='find . \( -iname "*.h" -o -iname "*.cpp" -o -iname "*.hpp" \) | xargs clang-format -i'
 alias get-headers="pacman -S $(pacman -Q | grep "^linux[0-9]* " | cut -d' ' -f1 | sed 's/$/-headers/')"
+alias movewindow='function _movewindow() { i3-msg "[id=$1]" move container to workspace 󰕼; }; _movewindow'
+alias hotreload='cd build && scp -r tradie flinnthebin:/var/www/ && cd .. && ssh flinnthebin'
+
+pskill() {
+  local keyword="$1"
+  ps aux | grep "[${keyword:0:1}]${keyword:1}" | awk '{print $2}' | xargs kill
+}
+
 
 # PATH
 prependPath() {
@@ -146,6 +154,7 @@ appendPath() {
     fi
 }
 
+prependPath "$HOME/.local/bin"
 prependPath "$HOME/.ghcup/bin"
 appendPath "~/.cabal/bin/xmonad"
 appendPath "/usr/share/platform-tools"
@@ -170,6 +179,13 @@ function agent() {
     else
         echo "~/.ssh/private/ directory does not exist."
     fi
+}
+
+# GIT
+function gap() {
+    git add .
+    git commit -m "$1"
+    git push
 }
 
 # BUILD
@@ -199,6 +215,12 @@ airpods() {
     pulseaudio -k
     pulseaudio --start
     bluetoothctl connect "B0:3F:64:21:7E:D7"
+}
+
+beats() {
+    pulseaudio -k
+    pulseaudio --start
+    bluetoothctl connect "04:9D:05:E0:A5:0C"
 }
 
 # STREAM

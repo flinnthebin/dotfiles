@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 infile.jpg"
+    exit 1
+fi
+
+INFILE="$1"
+
+exiftool -all= -overwrite_original "$INFILE"
+exiftool \
+    -GPSLatitude=36.1215 -GPSLatitudeRef=N \
+    -GPSLongitude=115.1706 -GPSLongitudeRef=W \
+    -overwrite_original "$INFILE"
+exiftool -Artist="+1 702-414-1000" -overwrite_original "$INFILE"
+exiftool -DateTimeOriginal="1999:05:03 12:00:00" -overwrite_original "$INFILE"
+
+exiftool "$INFILE"
+

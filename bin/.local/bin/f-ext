@@ -1,0 +1,47 @@
+#!/usr/bin/env sh
+
+#   __                 _
+#  / _|       _____  _| |_
+# | |_ _____ / _ \ \/ / __|
+# |  _|_____|  __/>  <| |_
+# |_|        \___/_/\_\\__|
+#
+# fuzzy file finder - by extension
+
+usage() {
+    echo "f-ext"
+    echo "Find files by extension"
+}
+
+printf "File extension: "
+read ext
+
+if [ -z "$ext" ]; then
+    usage
+    return 1
+fi
+
+file=$(find / -type f -iname "*.$ext" 2>/dev/null | fzf-tmux -p --reverse --exact --preview '
+  case $(file --mime-type -b {}) in
+    text/*) bat --style=plain --color=always {} ;;
+    application/pdf) pdftotext {} - ;;
+    image/*) exiftool {} ;;
+    application/zip) unzip -l {} ;;
+    application/x-tar) tar -tf {} ;;
+    *) file {} ;;
+  esac')
+
+case "$ext" in
+    txt|md|log|c|cpp|h|rs|hs|go|py|sh|ts|js|html|css)
+        vim "$file" ;;
+    pdf)
+        xpdf "$file" ;;
+    png|jpg|jpeg|gif|bmp|svg)
+        xdg-open "$file" ;;
+    zip)
+        unzip "$file" ;;
+    tar|tar.gz|tgz)
+        tar -xvf "$file" ;;
+    *)
+        xdg-open "$file" ;;
+esac
