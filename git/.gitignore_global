@@ -1,0 +1,84 @@
+
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+*.pyc
+*.pyo
+*.out
+*.a
+
+# Packages #
+############
+# It's better to unpack these files and commit the raw source
+# Git has its own built-in compression methods
+*.7z
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+*.msi
+*.deb
+*.rpm
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+
+# OS and Desktop Environment Generated Files #
+##############################################
+*.lock
+*.backup
+*~
+*.swp
+*.swo
+.trash/
+.cache/
+.config/
+
+# Neovim-specific #
+####################
+*.sw?    # Swap files
+*.un~    # Undo files
+*.bak    # Backup files
+.session  # Sessions saved by nvim
+shada/    # Shared data files
+*.shada   # Alternate shared data files
+
+# Temporary files #
+###################
+*.tmp
+*.temp
+
+# Build system files #
+######################
+build/
+dist/
+node_modules/
+target/
+__pycache__/
+*.egg-info/
+
+# IDE files #
+#############
+.vscode/
+.idea/
+.iml
+*.sublime-workspace
+
+# Package managers #
+####################
+.yarn/
+.pnp.*
+.npm/
+

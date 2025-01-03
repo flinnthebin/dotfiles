@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-STOW_FOLDERS="${STOW_FOLDERS:-alacritty,bin,clang,i3,i3-scrot,nvim,oh-my-zsh,tmux,zsh}"
+STOW_FOLDERS="${STOW_FOLDERS:-alacritty,bin,clang,git,i3,i3-scrot,nvim,oh-my-zsh,tmux,zsh}"
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 REPO_URL="https://github.com/flinnthebin/dotfiles"
 

@@ -20,6 +20,8 @@ for folder in "${folders[@]}"; do
   stow "$folder"
 done
 
+git config --global core.excludesfile ~/.gitignore_global
+
 # BlackArch
 echo "Downloading strap.sh..."
 curl -O https://blackarch.org/strap.sh
