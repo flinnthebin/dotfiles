@@ -2,7 +2,7 @@
 
 sudo pacman-mirrors --api --set-branch unstable
 sudo pacman-mirrors --fasttrack 5 && sudo pacman -Syu 
-sudo pacman -Syu --noconfirm stow alacritty neovim zsh git
+sudo pacman -Syu --needed - < pkglist.txt
 
 if ! command -v stow >/dev/null 2>&1; then
   echo "Error: GNU Stow not found in PATH."

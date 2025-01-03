@@ -208,7 +208,6 @@ assign [class="KCachegrind"] $ws2
 assign [class="Chromium-browser"] $ws3
 assign [class="burp-StartBurp"] $ws4
 assign [class="wireshark"] $ws5
-assign [class="nheko"] $ws6
 assign [class="xpdf"] $ws6
 assign [class="firefox"] $ws7
 assign [class="discord"] $ws8
