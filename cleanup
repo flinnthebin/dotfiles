@@ -6,7 +6,7 @@ cd "$DOTFILES" || { echo "Error: Unable to navigate to $DOTFILES"; exit 1; }
 IFS=',' read -r -a folders <<< "$STOW_FOLDERS"
 
 for folder in "${folders[@]}"; do
-    echo "Removing $folder..."
-    stow -D "$folder"
+  echo "Removing $folder..."
+  stow -D "$folder"
 done
 

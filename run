@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+STOW_FOLDERS="${STOW_FOLDERS:-alacritty,bin,clang,i3,i3-scrot,nvim,oh-my-zsh,tmux,zsh}"
+DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+REPO_URL="https://github.com/flinnthebin/dotfiles"
+
+if [ -d "$DOTFILES" ]; then
+    echo ".dotfiles found. Pulling the latest changes..."
+    git -C "$DOTFILES" pull
+else
+    echo ".dotfiles not found. Cloning repository..."
+    mkdir -p "$DOTFILES"
+    git clone "$REPO_URL" "$DOTFILES"
+fi
+
+echo "Installing..."
+"$DOTFILES/install"
+

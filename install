@@ -1,8 +1,12 @@
 #!/usr/bin/env sh
 
+sudo pacman-mirrors --api --set-branch unstable
+sudo pacman-mirrors --fasttrack 5 && sudo pacman -Syu 
+sudo pacman -Syu --noconfirm stow alacritty neovim zsh git
+
 if ! command -v stow >/dev/null 2>&1; then
-    echo "Error: GNU Stow is not installed. Please install it and try again."
-    exit 1
+  echo "Error: GNU Stow not found in PATH."
+  exit 1
 fi
 
 cd "$DOTFILES" || { echo "Error: Unable to navigate to $DOTFILES"; exit 1; }
@@ -11,8 +15,28 @@ cd "$DOTFILES" || { echo "Error: Unable to navigate to $DOTFILES"; exit 1; }
 IFS=',' read -r -a folders <<< "$STOW_FOLDERS"
 
 for folder in "${folders[@]}"; do
-    echo "Stowing $folder..."
-    stow -D "$folder" 2>/dev/null
-    stow "$folder"
+  echo "Stowing $folder..."
+  stow -D "$folder" 2>/dev/null
+  stow "$folder"
 done
+
+# BlackArch
+echo "Downloading strap.sh..."
+curl -O https://blackarch.org/strap.sh
+
+EXPECTED_SHA1="d062038042c5f141755ea39dbd615e6ff9e23121"
+echo "Verifying SHA1 checksum..."
+ACTUAL_SHA1=$(sha1sum strap.sh | awk '{print $1}')
+
+if [ "$ACTUAL_SHA1" = "$EXPECTED_SHA1" ]; then
+  echo "SHA1 checksum match. Installing BlackArch Keychain..."
+  sudo chmod +x strap.sh
+  sudo ./strap.sh
+else
+  echo "Error: SHA1 checksum does not match!"
+  echo "Expected: $EXPECTED_SHA1"
+  echo "Actual:   $ACTUAL_SHA1"
+  echo "Aborting for security reasons."
+  exit 1
+fi
 

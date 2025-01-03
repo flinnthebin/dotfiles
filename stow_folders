@@ -1,6 +1,0 @@
-#!/usr/bin/env sh
-
-STOW_FOLDERS="${STOW_FOLDERS:-alacritty,bin,clang,i3,i3-scrot,nvim,oh-my-zsh,folders,tmux,zsh}"
-DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
-
-"$DOTFILES/install"
