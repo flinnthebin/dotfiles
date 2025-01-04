@@ -74,6 +74,9 @@ function M.setup()
 			opts = { desc = "Open diagnostics [Q]uickfix list" },
 		},
 
+		-- Undo Tree
+		{ mode = "n", lhs = "<leader>u", rhs = vim.cmd.UndotreeToggle, opts = { desc = "Toggle Undo Tree" } },
+
 		-- Terminal mode exit
 		{ mode = "t", lhs = "<Esc><Esc>", rhs = "<C-\\><C-n>", opts = { desc = "Exit terminal mode" } },
 

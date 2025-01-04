@@ -30,26 +30,26 @@ function M.setup()
 
 	-- indent-blankline
 	local highlight = {
-		"RainbowRed",
-		"RainbowYellow",
-		"RainbowBlue",
-		"RainbowOrange",
-		"RainbowGreen",
-		"RainbowViolet",
-		"RainbowCyan",
+		"DragonRed",
+		"DragonYellow",
+		"DragonBlue",
+		"DragonOrange",
+		"DragonGreen",
+		"DragonViolet",
+		"DragonCyan",
 	}
 
 	local hooks = require("ibl.hooks")
 	-- create the highlight groups in the highlight setup hook, so they are reset
 	-- every time the colorscheme changes
 	hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
-		vim.api.nvim_set_hl(0, "RainbowRed", { fg = "#E06C75" })
-		vim.api.nvim_set_hl(0, "RainbowYellow", { fg = "#E5C07B" })
-		vim.api.nvim_set_hl(0, "RainbowBlue", { fg = "#61AFEF" })
-		vim.api.nvim_set_hl(0, "RainbowOrange", { fg = "#D19A66" })
-		vim.api.nvim_set_hl(0, "RainbowGreen", { fg = "#98C379" })
-		vim.api.nvim_set_hl(0, "RainbowViolet", { fg = "#C678DD" })
-		vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#56B6C2" })
+		vim.api.nvim_set_hl(0, "DragonRed", { fg = "#c4746e" })
+		vim.api.nvim_set_hl(0, "DragonYellow", { fg = "#c4b28a" })
+		vim.api.nvim_set_hl(0, "DragonBlue", { fg = "#8ba4b0" })
+		vim.api.nvim_set_hl(0, "DragonOrange", { fg = "#B88D7A" })
+		vim.api.nvim_set_hl(0, "DragonGreen", { fg = "#8a9a7b" })
+		vim.api.nvim_set_hl(0, "DragonViolet", { fg = "#8892A7" })
+		vim.api.nvim_set_hl(0, "DragonCyan", { fg = "#8ea4a2" })
 	end)
 
 	require("ibl").setup({ indent = { highlight = highlight } })
