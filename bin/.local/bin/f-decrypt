@@ -1,0 +1,19 @@
+#!/usr/bin/env sh
+
+if [ "$#" -lt 2 ]; then
+  echo "Usage: $0 <source> <destination>"
+  exit 1
+fi
+
+SOURCE="$1"
+DESTINATION="$2"
+
+mkdir -p "$DESTINATION"
+openssl enc -d -aes-256-cbc -in "$SOURCE" | tar -xf - -C "$DESTINATION"
+
+if [ $? -eq 0 ]; then
+  echo "Decryption successful! Files extracted to: $DESTINATION"
+else
+  echo "Decryption failed!"
+  exit 1
+fi
