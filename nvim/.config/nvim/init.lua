@@ -27,11 +27,6 @@ require("lazy").setup({
 	{ "folke/todo-comments.nvim", dependencies = { "nvim-lua/plenary.nvim" } },
 	{ "echasnovski/mini.nvim" },
 	{ "echasnovski/mini.indentscope" },
-	{
-		"nvimdev/dashboard-nvim",
-		event = "VimEnter",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-	},
 
 	-- Autoformat
 	{ "stevearc/conform.nvim" },
