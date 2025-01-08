@@ -30,7 +30,9 @@ git config --global core.excludesfile ~/.gitignore_global
 # pwndbg (https://github.com/pwndbg/pwndbg)
 git clone https://github.com/pwndbg/pwndbg
 cd pwndbg
-./setup.sh
+sudo sh setup.sh
+cd ~/
+rm -rf pwndbg
 
 # BlackArch (https://www.blackarch.org/blackarch-guide-en.pdf)
 echo "Downloading strap.sh..."
@@ -52,4 +54,13 @@ else
   exit 1
 fi
 
+# RTL8821 drivers for TP-Link AC600 Archer
+# (https://github.com/morrownr/8821au-20210708)
+# requires blackarch/pfring-dkms 1:3962.cb73329b-1
+
+git clone https://github.com/morrownr/8821au-20210708
+cd  8821au-20210708
+sudo sh install-driver.sh
+cd ~/
+rm -rf pwndbg
 
