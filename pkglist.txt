@@ -4,6 +4,7 @@ discord
 git
 gimp
 git-delta
+ghostty
 firefox
 iaito
 kdenlive
