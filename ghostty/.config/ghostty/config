@@ -1,0 +1,15 @@
+# font
+font-family = Fira Code
+font-style = Mono
+font-size = 12
+
+# theme
+theme = rose-pine-moon
+
+# cursor
+cursor-style = block
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 2
+
+# remove titlebar
+window-decoration = false
