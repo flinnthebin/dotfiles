@@ -123,8 +123,8 @@ elif [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
 fi
 
 # Alias
-alias python=python3
-alias pip=pip3
+alias python="/home/archer/.python/bin/python3"
+alias pip="/home/archer/.python/bin/pip3"
 alias pyenv='source ~/.python/bin/activate'
 alias vim=nvim ~/$(pwd | sed "s|$HOME/||")
 alias ssh='ssh -Y'
@@ -222,6 +222,11 @@ beats() {
     pulseaudio --start
     bluetoothctl connect "04:9D:05:E0:A5:0C"
 }
+
+unbeats() {
+bluetoothctl disconnect "04:9D:05:E0:A5:0C"
+}
+
 
 # STREAM
 

@@ -26,7 +26,7 @@ font pango:0xProto Nerd Font 8
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty 
+bindsym $mod+Return exec ghostty 
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -203,11 +203,12 @@ bindsym $mod+Shift+equal move container to workspace $wse; workspace $wse
 # Open applications on specific workspaces
 assign [class="ghidra-Ghidra"] $wsg
 assign [class="iaito"] $wsg
-assign [class="Alacritty"] $ws1
+assign [class="ghostty"] $ws1
 assign [class="KCachegrind"] $ws2
 assign [class="Chromium-browser"] $ws3
 assign [class="burp-StartBurp"] $ws4
 assign [class="wireshark"] $ws5
+assign [class="nheko"] $ws6
 assign [class="xpdf"] $ws6
 assign [class="firefox"] $ws7
 assign [class="discord"] $ws8

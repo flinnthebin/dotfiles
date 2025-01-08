@@ -27,6 +27,13 @@ function M.setup()
 	vim.opt.undofile = true
 	vim.opt.list = true
 	vim.opt.listchars = { tab = "│ ", trail = "·", nbsp = "␣" }
+	vim.api.nvim_exec2(
+		[[
+		syntax match Arrow "->" conceal cchar=
+		]],
+		{ output = false }
+	)
+	vim.opt.conceallevel = 2
 	vim.opt.inccommand = "split"
 	vim.opt.cursorline = true
 	vim.opt.ignorecase = true

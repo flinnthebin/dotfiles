@@ -45,7 +45,10 @@ function M.setup()
 		group = vim.api.nvim_create_augroup("kickstart-lsp-detach", { clear = true }),
 		callback = function(event)
 			vim.lsp.buf.clear_references()
-			vim.api.nvim_clear_autocmds({ group = "kickstart-lsp-highlight", buffer = event.buf })
+			-- Check if the group exists before clearing autocmds
+			if pcall(vim.api.nvim_get_autocmds, { group = "kickstart-lsp-highlight" }) then
+				vim.api.nvim_clear_autocmds({ group = "kickstart-lsp-highlight", buffer = event.buf })
+			end
 		end,
 	})
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -70,6 +73,7 @@ function M.setup()
 		},
 	})
 	require("lspconfig").pylsp.setup({
+		cmd = { "/home/archer/.python/bin/pylsp" },
 		settings = {
 			pylsp = {
 				plugins = {

@@ -18,6 +18,7 @@ require("lazy").setup({
 	{ "numToStr/Comment.nvim", opts = {} },
 	{ "lewis6991/gitsigns.nvim" },
 	{ "folke/which-key.nvim" },
+	{ "mbbill/undotree" },
 
 	-- UI
 	{ "rose-pine/neovim" },
@@ -76,6 +77,7 @@ require("lazy").setup({
 
 	-- Treesitter
 	{ "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+	{ "nvim-treesitter/playground", opts = {} },
 
 	-- Telescope
 	{
@@ -99,6 +101,7 @@ require("lazy").setup({
 
 require("config.autocommands").setup()
 require("config.keymaps").setup()
+require("config.glyphs").setup()
 require("plugins.core").setup()
 require("plugins.ui").setup()
 require("plugins.auto").setup()

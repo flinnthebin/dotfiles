@@ -11,18 +11,28 @@ fi
 
 cd "$DOTFILES" || { echo "Error: Unable to navigate to $DOTFILES"; exit 1; }
 
-# Split STOW_FOLDERS into an array
-IFS=',' read -r -a folders <<< "$STOW_FOLDERS"
-
-for folder in "${folders[@]}"; do
-  echo "Stowing $folder..."
-  stow -D "$folder" 2>/dev/null
-  stow "$folder"
+IFS=',' read -r -a sys_dirs <<< "$SYS_DIRS"
+for dir in "${sys_dirs[@]}"; do
+  echo "Stowing $dir..."
+  sudo stow -D -t / "$dir" 2>/dev/null
+  sudo stow -t / "$dir"
+done
+sudo fc-cache -fv
+IFS=',' read -r -a usr_dirs <<< "$USR_DIRS"
+for dir in "${usr_dirs[@]}"; do
+  echo "Stowing $dir..."
+  stow -D "$dir" 2>/dev/null
+  stow "$dir"
 done
 
 git config --global core.excludesfile ~/.gitignore_global
 
-# BlackArch
+# pwndbg (https://github.com/pwndbg/pwndbg)
+git clone https://github.com/pwndbg/pwndbg
+cd pwndbg
+./setup.sh
+
+# BlackArch (https://www.blackarch.org/blackarch-guide-en.pdf)
 echo "Downloading strap.sh..."
 curl -O https://blackarch.org/strap.sh
 
@@ -41,4 +51,5 @@ else
   echo "Aborting for security reasons."
   exit 1
 fi
+
 
