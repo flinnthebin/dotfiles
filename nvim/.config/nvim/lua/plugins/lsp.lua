@@ -53,6 +53,40 @@ function M.setup()
 	})
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+	local rust_lsp = require("lspconfig")
+	local rust_cmd = { "rust-analyzer" }
+	local rust_config = {
+		cmd = rust_cmd,
+		filetypes = { "rust" },
+		root_dir = rust_lsp.util.root_pattern("Cargo.toml", ".git"),
+		capabilities = capabilities, -- Include extended capabilities (like for `cmp-nvim-lsp`)
+		settings = {
+			["rust-analyzer"] = {
+				cargo = {
+					allFeatures = true, -- Enable all features for the workspace
+					loadOutDirsFromCheck = true, -- Required for procedural macro support
+				},
+				check = {
+					command = "clippy", -- Use clippy for linting during workspace checks
+				},
+				procMacro = {
+					enable = true, -- Enable support for procedural macros
+				},
+				inlayHints = {
+					lifetimeElisionHints = {
+						enable = true,
+						useParameterNames = true,
+					},
+					parameterHints = {
+						enable = true,
+					},
+					typeHints = {
+						enable = true,
+					},
+				},
+			},
+		},
+	}
 	local nvim_lsp = require("lspconfig")
 	local zls_cmd = { "zls" }
 	local zls_config = {
@@ -111,7 +145,7 @@ function M.setup()
 			vim.diagnostic.enable()
 			print("Clangd LSP features enabled")
 		else
-			vim.diagnostic.disable()
+			vim.diagnostic.enable(false)
 			print("Clangd LSP features disabled")
 		end
 	end

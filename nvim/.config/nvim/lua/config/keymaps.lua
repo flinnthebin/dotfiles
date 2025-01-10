@@ -125,6 +125,18 @@ function M.setup()
 		{ mode = "v", lhs = "<Right>", rhs = ">>", opts = { noremap = true } },
 		{ mode = "v", lhs = "<Up>", rhs = "{", opts = { noremap = true } },
 		{ mode = "v", lhs = "<Down>", rhs = "}", opts = { noremap = true } },
+
+		-- Rustfmt
+		{
+			mode = "n",
+			lhs = "<leader>F",
+			rhs = function()
+				vim.cmd("silent! write") -- Save the file
+				vim.cmd("silent! !rustfmt %") -- Run rustfmt on the current file
+				vim.cmd("silent! edit") -- Reload the file to reflect changes
+			end,
+			opts = { desc = "[F]ormat rustfmt" },
+		},
 	}
 
 	for _, map in ipairs(keymaps) do
