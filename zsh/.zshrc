@@ -144,7 +144,7 @@ pskill() {
 # PATH
 prependPath() {
     if [[ "$PATH" != *"$1"* ]]; then
-        export PATH=$PATH:$1
+        export PATH=$1:$PATH
     fi
 }
 
@@ -158,10 +158,16 @@ prependPath "$HOME/.local/bin"
 prependPath "$HOME/.ghcup/bin"
 appendPath "~/.cabal/bin/xmonad"
 appendPath "/usr/share/platform-tools"
+export CHROME_EXECUTABLE="/usr/bin/chromium"
+export ANDROID_HOME="/opt/android-sdk"
+export JAVA_HOME="/usr/lib/jvm/java-8-openjdk"
 export GOROOT="/usr/local/go"
 export GOPATH="$HOME/.go"
 prependPath "$GOROOT/bin"
 prependPath "$GOPATH/bin"
+prependPath "~/flutter/bin"
+appendPath "$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
+appendPath "$JAVA_HOME/bin:$PATH"
 
 # AGENT
 function agent() {
@@ -190,11 +196,7 @@ function gap() {
 
 # BUILD
 build() {
-    mkdir -p build && \
-    cd build && \
-    cmake .. && \
-    cmake --build . && \
-    cd ..
+    cmake -S . -B build && cmake --build build
 }
 
 unbuild() {
@@ -202,8 +204,18 @@ unbuild() {
     echo "build directory removed"
 }
 
-# CPPDOC
+wasm-build() {
+    mkdir -p build-wasm && \
+    emcmake cmake -S . -B build-wasm -DCMAKE_BUILD_TYPE=Release \
+        -DUSE_EXTERNAL_GLFW=OFF \
+        -DBUILD_EXAMPLES=OFF \
+        -DBUILD_GAMES=OFF \
+        -DPLATFORM=Web \
+        -DGRAPHICS=GRAPHICS_API_OPENGL_ES2 && \
+    cmake --build build-wasm
+}
 
+# CPPDOC
 cppdoc() {
     local file
     file=$(find ~/.cppdoc/ -type f 2>/dev/null | fzf)
