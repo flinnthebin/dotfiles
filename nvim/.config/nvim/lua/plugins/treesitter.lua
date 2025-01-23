@@ -13,6 +13,7 @@ function M.setup()
 			"luadoc",
 			"markdown",
 			"python",
+			"rust",
 			"vim",
 			"vimdoc",
 		},

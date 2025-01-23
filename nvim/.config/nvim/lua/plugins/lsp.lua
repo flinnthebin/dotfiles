@@ -54,23 +54,23 @@ function M.setup()
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 	local rust_lsp = require("lspconfig")
-	local rust_cmd = { "rust-analyzer" }
+	local rust_cmd = { "/home/archer/.cargo/bin/rust-analyzer" }
 	local rust_config = {
 		cmd = rust_cmd,
 		filetypes = { "rust" },
 		root_dir = rust_lsp.util.root_pattern("Cargo.toml", ".git"),
-		capabilities = capabilities, -- Include extended capabilities (like for `cmp-nvim-lsp`)
+		capabilities = capabilities,
 		settings = {
 			["rust-analyzer"] = {
 				cargo = {
-					allFeatures = true, -- Enable all features for the workspace
-					loadOutDirsFromCheck = true, -- Required for procedural macro support
+					allFeatures = true,
+					loadOutDirsFromCheck = true,
 				},
 				check = {
-					command = "clippy", -- Use clippy for linting during workspace checks
+					command = "clippy",
 				},
 				procMacro = {
-					enable = true, -- Enable support for procedural macros
+					enable = true,
 				},
 				inlayHints = {
 					lifetimeElisionHints = {
@@ -87,15 +87,17 @@ function M.setup()
 			},
 		},
 	}
-	local nvim_lsp = require("lspconfig")
+	rust_lsp.rust_analyzer.setup(rust_config)
+	local zig_lsp = require("lspconfig")
 	local zls_cmd = { "zls" }
 	local zls_config = {
 		cmd = zls_cmd,
 		filetypes = { "zig" },
-		root_dir = nvim_lsp.util.root_pattern(".git"),
+		root_dir = zig_lsp.util.root_pattern(".git"),
 	}
-	nvim_lsp.zls.setup(zls_config)
-	nvim_lsp.pylyzer.setup({
+	zig_lsp.zls.setup(zls_config)
+	local py_lsp = require("lspconfig")
+	py_lsp.pylyzer.setup({
 		cmd = { "/home/archer/.python/bin/pylyzer", "--server" },
 		settings = {
 			python = {
@@ -123,6 +125,7 @@ function M.setup()
 			},
 		},
 	})
+	local clangd_lsp = require("lspconfig")
 	local clangd_cmd = {
 		"clangd",
 		"--enable-config",
@@ -137,7 +140,7 @@ function M.setup()
 		filetypes = { "c", "cpp", "objc", "objcpp" },
 		root_dir = require("lspconfig").util.root_pattern("compile_commands.json", "compile_flags.txt", ".git"),
 	}
-	nvim_lsp.clangd.setup(clangd_config)
+	clangd_lsp.clangd.setup(clangd_config)
 	local clangd_enabled = true
 	function ToggleClangdFeatures()
 		clangd_enabled = not clangd_enabled
@@ -149,6 +152,20 @@ function M.setup()
 			print("Clangd LSP features disabled")
 		end
 	end
+	local kotlin_lsp = require("lspconfig")
+	kotlin_lsp.kotlin_language_server.setup({
+		on_attach = function(client, bufnr)
+			local opts = { noremap = true, silent = true }
+			local buf_set_keymap = vim.api.nvim_buf_set_keymap
+			vim.api.nvim_set_keymap(
+				"n",
+				"<leader>ca",
+				"<cmd>lua vim.lsp.buf.code_action()<CR>",
+				{ noremap = true, silent = true }
+			)
+		end,
+		capabilities = require("cmp_nvim_lsp").default_capabilities(),
+	})
 	vim.api.nvim_set_keymap("n", "<leader>lsp", ":lua ToggleClangdFeatures()<CR>", { noremap = true, silent = true })
 	local servers = {
 		zls = {},
