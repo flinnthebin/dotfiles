@@ -154,18 +154,20 @@ appendPath() {
     fi
 }
 
+prependPath "$HOME/.kotlin-language-server/src/main/kotlin/org/javacs/kt/semantictokens/SemanticTokens.kt"
 prependPath "$HOME/.local/bin"
 prependPath "$HOME/.ghcup/bin"
-appendPath "~/.cabal/bin/xmonad"
+appendPath "$HOME/.cabal/bin/xmonad"
 appendPath "/usr/share/platform-tools"
 export CHROME_EXECUTABLE="/usr/bin/chromium"
 export ANDROID_HOME="/opt/android-sdk"
-export JAVA_HOME="/usr/lib/jvm/java-8-openjdk"
+export ANDROID_NDK_HOME="opt/android-ndk/"
+export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
 export GOROOT="/usr/local/go"
 export GOPATH="$HOME/.go"
 prependPath "$GOROOT/bin"
 prependPath "$GOPATH/bin"
-prependPath "~/flutter/bin"
+prependPath "$HOME/.local/flutter/bin"
 appendPath "$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools"
 appendPath "$JAVA_HOME/bin:$PATH"
 
