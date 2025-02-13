@@ -94,6 +94,7 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 
 export BROWSER=firefox
+export OLLAMA_DEVICE=cuda
 
 # Rose-pine
 # Directories to Pine (approximating #31748f)
@@ -128,8 +129,6 @@ alias pip="/home/archer/.python/bin/pip3"
 alias pyenv='source ~/.python/bin/activate'
 alias vim=nvim ~/$(pwd | sed "s|$HOME/||")
 alias ssh='ssh -Y'
-alias vol+='pactl set-sink-volume @DEFAULT_SINK@ +5%'
-alias vol-='pactl set-sink-volume @DEFAULT_SINK@ -5%'
 alias format='find . \( -iname "*.h" -o -iname "*.cpp" -o -iname "*.hpp" \) | xargs clang-format -i'
 alias get-headers="pacman -S $(pacman -Q | grep "^linux[0-9]* " | cut -d' ' -f1 | sed 's/$/-headers/')"
 alias movewindow='function _movewindow() { i3-msg "[id=$1]" move container to workspace 󰕼; }; _movewindow'
@@ -140,6 +139,18 @@ pskill() {
   ps aux | grep "[${keyword:0:1}]${keyword:1}" | awk '{print $2}' | xargs kill
 }
 
+vol() {
+  local sign="${1:0:1}"
+  local count="${#1}"
+
+  if [[ "$sign" == "+" ]]; then
+    pactl set-sink-volume @DEFAULT_SINK@ +"$((count * 5))%"
+  elif [[ "$sign" == "-" ]]; then
+    pactl set-sink-volume @DEFAULT_SINK@ "-$((count * 5))%"
+  else
+    echo "usage: vol+++, vol--, etc. increment 5% per."
+  fi
+}
 
 # PATH
 prependPath() {
@@ -189,13 +200,6 @@ function agent() {
     fi
 }
 
-# GIT
-function gap() {
-    git add .
-    git commit -m "$1"
-    git push
-}
-
 # BUILD
 build() {
     cmake -S . -B build && cmake --build build
@@ -237,7 +241,7 @@ beats() {
     bluetoothctl connect "04:9D:05:E0:A5:0C"
 }
 
-unbeats() {
+beatskill() {
 bluetoothctl disconnect "04:9D:05:E0:A5:0C"
 }
 
