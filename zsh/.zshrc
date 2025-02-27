@@ -94,7 +94,7 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 
 export BROWSER=firefox
-export OLLAMA_DEVICE=cuda
+export LLAMA_ARG_MODEL="/home/archer/llama.cpp/models/ggml-vocab-qwen2.gguf"
 
 # Rose-pine
 # Directories to Pine (approximating #31748f)
@@ -173,7 +173,7 @@ appendPath "/usr/share/platform-tools"
 export CHROME_EXECUTABLE="/usr/bin/chromium"
 export ANDROID_HOME="/opt/android-sdk"
 export ANDROID_NDK_HOME="opt/android-ndk/"
-export JAVA_HOME="/usr/lib/jvm/java-17-openjdk"
+export JAVA_HOME="/usr/lib/jvm/java-23-openjdk"
 export GOROOT="/usr/local/go"
 export GOPATH="$HOME/.go"
 prependPath "$GOROOT/bin"
