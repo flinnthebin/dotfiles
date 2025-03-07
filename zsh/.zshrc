@@ -124,6 +124,7 @@ elif [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
 fi
 
 # Alias
+alias cat="cat -v"
 alias python="/home/archer/.python/bin/python3"
 alias pip="/home/archer/.python/bin/pip3"
 alias pyenv='source ~/.python/bin/activate'
