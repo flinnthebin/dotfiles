@@ -125,15 +125,25 @@ function M.setup()
 		{ mode = "v", lhs = "<Right>", rhs = ">>", opts = { noremap = true } },
 		{ mode = "v", lhs = "<Up>", rhs = "{", opts = { noremap = true } },
 		{ mode = "v", lhs = "<Down>", rhs = "}", opts = { noremap = true } },
+		{ mode = "v", lhs = "<", rhs = "<gv", opts = { noremap = true, silent = true } },
+		{ mode = "v", lhs = ">", rhs = ">gv", opts = { noremap = true, silent = true } },
+
+		-- Code Action
+		{
+			mode = "n",
+			lhs = "<leader>ca",
+			rhs = vim.lsp.buf.code_action,
+			opts = { desc = "LSP: Code Action", noremap = true, silent = true },
+		},
 
 		-- Rustfmt
 		{
 			mode = "n",
 			lhs = "<leader>F",
 			rhs = function()
-				vim.cmd("silent! write") -- Save the file
-				vim.cmd("silent! !rustfmt %") -- Run rustfmt on the current file
-				vim.cmd("silent! edit") -- Reload the file to reflect changes
+				vim.cmd("silent! write")
+				vim.cmd("silent! !rustfmt %")
+				vim.cmd("silent! edit")
 			end,
 			opts = { desc = "[F]ormat rustfmt" },
 		},

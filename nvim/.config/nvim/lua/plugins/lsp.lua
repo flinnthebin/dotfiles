@@ -2,6 +2,19 @@
 
 local M = {}
 
+local diag_active = true
+
+function M.toggle()
+	diag_active = not diag_active
+	if diag_active then
+		vim.diagnostic.enable()
+		print("LSP diagnostics enabled")
+	else
+		vim.diagnostic.enable(false)
+		print("LSP diagnostics disabled")
+	end
+end
+
 function M.setup()
 	vim.api.nvim_create_autocmd("LspAttach", {
 		group = vim.api.nvim_create_augroup("kickstart-lsp-attach", { clear = true }),
@@ -19,6 +32,7 @@ function M.setup()
 			map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 			map("K", vim.lsp.buf.hover, "Hover Documentation")
 			map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
+			map("<leader>tl", M.toggle, "[T]oggle [L]SP")
 			local client = vim.lsp.get_client_by_id(event.data.client_id)
 			if client and client.server_capabilities.documentHighlightProvider then
 				local highlight_augroup = vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
@@ -132,7 +146,13 @@ function M.setup()
 		"--clang-tidy",
 		"--completion-style=detailed",
 		"--header-insertion=never",
-		"--std=c++23",
+		"--std=c++20",
+		"--compile-commands-dir=build",
+		"--background-index",
+		"--pch-storage=memory",
+		"--header-insertion-decorators",
+		"--function-arg-placeholders",
+		"--log=verbose",
 	}
 	local clangd_config = {
 		cmd = clangd_cmd,
@@ -154,19 +174,16 @@ function M.setup()
 	end
 	local kotlin_lsp = require("lspconfig")
 	kotlin_lsp.kotlin_language_server.setup({
-		on_attach = function(client, bufnr)
-			local opts = { noremap = true, silent = true }
-			local buf_set_keymap = vim.api.nvim_buf_set_keymap
-			vim.api.nvim_set_keymap(
-				"n",
-				"<leader>ca",
-				"<cmd>lua vim.lsp.buf.code_action()<CR>",
-				{ noremap = true, silent = true }
-			)
-		end,
+		cmd = { "/home/archer/.kotlin-language-server/build/install/server/bin/kotlin-language-server" },
 		capabilities = require("cmp_nvim_lsp").default_capabilities(),
+		settings = {
+			kotlin = {
+				formatting = {
+					indentSize = 2,
+				},
+			},
+		},
 	})
-	vim.api.nvim_set_keymap("n", "<leader>lsp", ":lua ToggleClangdFeatures()<CR>", { noremap = true, silent = true })
 	local servers = {
 		zls = {},
 		clangd = {},
@@ -190,6 +207,8 @@ function M.setup()
 	})
 	require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 	require("mason-lspconfig").setup({
+		ensure_installed = vim.tbl_keys(servers),
+		automatic_installation = true,
 		handlers = {
 			function(server_name)
 				local server = servers[server_name] or {}

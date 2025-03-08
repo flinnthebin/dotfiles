@@ -102,9 +102,6 @@ require("lazy").setup({
 	},
 }, {})
 
-require("config.autocommands").setup()
-require("config.keymaps").setup()
-require("config.glyphs").setup()
 require("plugins.core").setup()
 require("plugins.ui").setup()
 require("plugins.auto").setup()
@@ -112,3 +109,7 @@ require("plugins.debugger").setup()
 require("plugins.lsp").setup()
 require("plugins.treesitter").setup()
 require("plugins.telescope").setup()
+
+require("config.keymaps").setup()
+require("config.autocommands").setup()
+require("config.glyphs").setup()
