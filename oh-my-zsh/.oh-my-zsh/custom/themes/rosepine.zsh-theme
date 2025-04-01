@@ -155,4 +155,4 @@ TRAPALRM() {
 }
 
 # prompt
-PROMPT='$(real_time) $(login_info) $(directory) $(git_status)$(command_status) ';
+PROMPT='$(virtualenv_prompt_info)$(real_time) $(login_info) $(directory) $(git_status)$(command_status) ';

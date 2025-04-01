@@ -125,11 +125,8 @@ fi
 
 # Alias
 alias cat="cat -v"
-alias python="/home/archer/.python/bin/python3"
-alias pip="/home/archer/.python/bin/pip3"
-alias pyenv='source ~/.python/bin/activate'
 alias vim=nvim ~/$(pwd | sed "s|$HOME/||")
-alias ssh='ssh -Y'
+#alias ssh='ssh -Y'
 alias format='find . \( -iname "*.h" -o -iname "*.cpp" -o -iname "*.hpp" \) | xargs clang-format -i'
 alias get-headers="pacman -S $(pacman -Q | grep "^linux[0-9]* " | cut -d' ' -f1 | sed 's/$/-headers/')"
 alias movewindow='function _movewindow() { i3-msg "[id=$1]" move container to workspace 󰕼; }; _movewindow'
@@ -163,6 +160,18 @@ prependPath() {
 appendPath() {
     if [[ "$PATH" != *"$1"* ]]; then
         export PATH=$PATH:$1
+    fi
+}
+
+# Customizing Python virtualenv prompt color to Rose Pine (Red: #eb6f92)
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+function virtualenv_prompt_info() {
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        local venv_name=$(basename "$VIRTUAL_ENV")
+        local color="%{$(rgb_color '#eb6f92')%}" # Red (Love)
+        local reset="%{$(tput sgr0)%}"
+        echo "${color}(${venv_name})${reset} "
     fi
 }
 
@@ -287,3 +296,20 @@ antikris() {
 . "$HOME/.cargo/env"
 
 xrandr --output HDMI-1-0 --mode 1920x1080 --same-as eDP
+
+source /usr/share/nvm/init-nvm.sh
+
+# node-server
+node-server() {
+    (cd ~/uni/lurkforwork && npx http-server frontend -c 1 -p 8080 & echo $! > ~/pid.txt)
+    (cd ~/uni/ass3-backend && npm start & echo $! >> ~/pid.txt)
+}
+
+# kill-server
+kill-server() {
+    while read -r pid; do
+        kill "$pid"
+    done < ~/pid.txt
+}
+
+source "$HOME/.pynv/bin/activate"
