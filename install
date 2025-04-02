@@ -34,26 +34,6 @@ sudo sh setup.sh
 cd ~/
 rm -rf pwndbg
 
-# BlackArch (https://www.blackarch.org/blackarch-guide-en.pdf)
-echo "Downloading strap.sh..."
-curl -O https://blackarch.org/strap.sh
-
-EXPECTED_SHA1="d062038042c5f141755ea39dbd615e6ff9e23121"
-echo "Verifying SHA1 checksum..."
-ACTUAL_SHA1=$(sha1sum strap.sh | awk '{print $1}')
-
-if [ "$ACTUAL_SHA1" = "$EXPECTED_SHA1" ]; then
-  echo "SHA1 checksum match. Installing BlackArch Keychain..."
-  sudo chmod +x strap.sh
-  sudo ./strap.sh
-else
-  echo "Error: SHA1 checksum does not match!"
-  echo "Expected: $EXPECTED_SHA1"
-  echo "Actual:   $ACTUAL_SHA1"
-  echo "Aborting for security reasons."
-  exit 1
-fi
-
 # RTL8821 drivers for TP-Link AC600 Archer
 # (https://github.com/morrownr/8821au-20210708)
 # requires blackarch/pfring-dkms 1:3962.cb73329b-1
