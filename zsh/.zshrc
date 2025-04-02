@@ -163,7 +163,6 @@ appendPath() {
     fi
 }
 
-# Customizing Python virtualenv prompt color to Rose Pine (Red: #eb6f92)
 export VIRTUAL_ENV_DISABLE_PROMPT=1
 
 function virtualenv_prompt_info() {
@@ -171,9 +170,10 @@ function virtualenv_prompt_info() {
         local venv_name=$(basename "$VIRTUAL_ENV")
         local color="%{$(rgb_color '#eb6f92')%}" # Red (Love)
         local reset="%{$(tput sgr0)%}"
-        echo "${color}(${venv_name})${reset} "
+        echo "${color}[${venv_name}]${reset} "
     fi
 }
+source "$HOME/.pynv/bin/activate"
 
 prependPath "$HOME/.kotlin-language-server/src/main/kotlin/org/javacs/kt/semantictokens/SemanticTokens.kt"
 prependPath "$HOME/.local/bin"
@@ -311,5 +311,3 @@ kill-server() {
         kill "$pid"
     done < ~/pid.txt
 }
-
-source "$HOME/.pynv/bin/activate"
