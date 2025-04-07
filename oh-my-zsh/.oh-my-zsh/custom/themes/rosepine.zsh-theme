@@ -24,12 +24,19 @@ function real_time() {
     echo "${color}${time}${color_reset}";
 }
 
-# login_info
-function login_info() {
-    local color="%{$(rgb_color '#9ccfd8')%}";  # Bright Cyan
-    local ip="$(hostname -i | awk '{print $1}')";
-    local color_reset="%{$(tput sgr0)%}";
-    echo "${color}[%n@${ip}]${color_reset}";
+function ip_info() {
+    local color="%{$(rgb_color '#9ccfd8')%}"  # Bright Cyan
+
+    # tunnel -> wifi -> localhost
+    local tun_ip="$(ip -4 addr show tun0 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+    local wifi_ip="$(ip -4 addr show wlp4s0 2>/dev/null | grep -oP '(?<=inet\s)\d+(\.\d+){3}')"
+    local fallback_ip="$(hostname -i | awk '{print $1}')"
+
+    # pick first available
+    local ip="${tun_ip:-${wifi_ip:-$fallback_ip}}"
+
+    local color_reset="%{$(tput sgr0)%}"
+    echo "${color}[%n@${ip}]${color_reset}"
 }
 
 # directory
@@ -155,4 +162,4 @@ TRAPALRM() {
 }
 
 # prompt
-PROMPT='$(virtualenv_prompt_info)$(real_time) $(login_info) $(directory) $(git_status)$(command_status) ';
+PROMPT='$(virtualenv_prompt_info)$(real_time) $(ip_info) $(directory) $(git_status)$(command_status) ';
