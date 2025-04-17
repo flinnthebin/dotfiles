@@ -94,7 +94,6 @@ source $ZSH/oh-my-zsh.sh
 # For a full list of active aliases, run `alias`.
 
 export BROWSER=firefox
-export LLAMA_ARG_MODEL="/home/archer/llama.cpp/models/ggml-vocab-qwen2.gguf"
 
 # Rose-pine
 # Directories to Pine (approximating #31748f)
@@ -125,12 +124,30 @@ fi
 
 # Alias
 alias cat="cat -v"
-alias vim=nvim ~/$(pwd | sed "s|$HOME/||")
-#alias ssh='ssh -Y'
+alias ssh='ssh -Y'
 alias format='find . \( -iname "*.h" -o -iname "*.cpp" -o -iname "*.hpp" \) | xargs clang-format -i'
 alias get-headers="pacman -S $(pacman -Q | grep "^linux[0-9]* " | cut -d' ' -f1 | sed 's/$/-headers/')"
 alias movewindow='function _movewindow() { i3-msg "[id=$1]" move container to workspace 󰕼; }; _movewindow'
 alias hotreload='cd build && scp -r tradie flinnthebin:/var/www/ && cd .. && ssh flinnthebin'
+
+vim() {
+  cwd="$(pwd)"
+  
+  if [[ "$cwd" == "$HOME"* ]]; then
+    # Inside home, strip prefix
+    rel_path="${cwd#$HOME/}"
+    target_dir="$HOME/$rel_path"
+  else
+    # Outside home, just use full path
+    target_dir="$cwd"
+  fi
+
+  if [[ "$TERM_PROGRAM" == "Alacritty" ]]; then
+    ghostty -d "$target_dir" -e nvim "$@"
+  else
+    command nvim "$@"
+  fi
+}
 
 pskill() {
   local keyword="$1"
@@ -248,11 +265,11 @@ airpods() {
 beats() {
     pulseaudio -k
     pulseaudio --start
-    bluetoothctl connect "04:9D:05:E0:A5:0C"
+    bluetoothctl connect "F8:66:5A:4E:F9:75"
 }
 
 beatskill() {
-bluetoothctl disconnect "04:9D:05:E0:A5:0C"
+bluetoothctl disconnect "F8:66:5A:4E:F9:75"
 }
 
 
@@ -287,6 +304,16 @@ function stream() {
   unset stream_key
 }
 
+# monitor
+
+mirror() {
+  xrandr --output HDMI-1-0 --mode 1920x1080 --same-as eDP
+}
+
+dual() {
+  xrandr --output HDMI-1-0 --mode 1920x1080 --left-of eDP --auto
+}
+
 # antikris
 antikris() {
     xrandr --output eDP --gamma 1:1:1 --brightness 1
@@ -295,14 +322,12 @@ antikris() {
 [ -f "/home/archer/.ghcup/env" ] && . "/home/archer/.ghcup/env" # ghcup-env
 . "$HOME/.cargo/env"
 
-xrandr --output HDMI-1-0 --mode 1920x1080 --same-as eDP
-
 source /usr/share/nvm/init-nvm.sh
 
 # node-server
 node-server() {
-    (cd ~/uni/lurkforwork && npx http-server frontend -c 1 -p 8080 & echo $! > ~/pid.txt)
-    (cd ~/uni/ass3-backend && npm start & echo $! >> ~/pid.txt)
+    (cd ~/uni/bigbrain/frontend && npm run dev &)
+    (cd ~/uni/bigbrain/backend && npm start & echo $! >> ~/pid.txt)
 }
 
 # kill-server

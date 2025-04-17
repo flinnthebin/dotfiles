@@ -27,12 +27,6 @@ function M.setup()
 	vim.opt.undofile = true
 	vim.opt.list = true
 	vim.opt.listchars = { tab = "│ ", trail = "·", nbsp = "␣" }
-	vim.api.nvim_exec2(
-		[[
-		syntax match Arrow "->" conceal cchar=
-		]],
-		{ output = false }
-	)
 	vim.opt.conceallevel = 2
 	vim.opt.inccommand = "split"
 	vim.opt.cursorline = true
@@ -121,8 +115,8 @@ function M.setup()
 		{ mode = "n", lhs = "<Right>", rhs = ">>", opts = { noremap = true } },
 		{ mode = "n", lhs = "<Up>", rhs = "{", opts = { noremap = true } },
 		{ mode = "n", lhs = "<Down>", rhs = "}", opts = { noremap = true } },
-		{ mode = "v", lhs = "<Left>", rhs = "<<", opts = { noremap = true } },
-		{ mode = "v", lhs = "<Right>", rhs = ">>", opts = { noremap = true } },
+		{ mode = "v", lhs = "<Left>", rhs = "<gv", opts = { noremap = true } },
+		{ mode = "v", lhs = "<Right>", rhs = ">gv", opts = { noremap = true } },
 		{ mode = "v", lhs = "<Up>", rhs = "{", opts = { noremap = true } },
 		{ mode = "v", lhs = "<Down>", rhs = "}", opts = { noremap = true } },
 		{ mode = "v", lhs = "<", rhs = "<gv", opts = { noremap = true, silent = true } },

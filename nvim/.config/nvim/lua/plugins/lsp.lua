@@ -67,6 +67,14 @@ function M.setup()
 	})
 	local capabilities = vim.lsp.protocol.make_client_capabilities()
 	capabilities = vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+	local terraform_ls = require("lspconfig")
+	local terraform_cmd = { "/usr/local/bin/terraform-ls", "serve" }
+	local terraform_config = {
+		cmd = terraform_cmd,
+		filetypes = { "terraform", "hcl" },
+		capabilities = capabilities,
+	}
+	terraform_ls.terraformls.setup(terraform_config)
 	local rust_lsp = require("lspconfig")
 	local rust_cmd = { "/home/archer/.cargo/bin/rust-analyzer" }
 	local rust_config = {

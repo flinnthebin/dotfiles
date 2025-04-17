@@ -112,4 +112,3 @@ require("plugins.telescope").setup()
 
 require("config.keymaps").setup()
 require("config.autocommands").setup()
-require("config.glyphs").setup()
