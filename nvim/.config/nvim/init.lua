@@ -100,6 +100,9 @@ require("lazy").setup({
 			{ "nvim-tree/nvim-web-devicons", enabled = vim.g.have_nerd_font },
 		},
 	},
+
+	-- golf
+	{ "vuciv/golf" },
 }, {})
 
 require("plugins.core").setup()
