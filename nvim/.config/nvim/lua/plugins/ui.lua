@@ -4,7 +4,9 @@ local M = {}
 
 function M.setup()
 	-- dragonmode
-	vim.cmd("colorscheme kanagawa-dragon")
+	-- vim.cmd("colorscheme kanagawa-dragon")
+	-- nightmode
+	vim.cmd("colorscheme tokyonight-night")
 
 	-- icons
 	vim.g.have_nerd_font = vim.g.have_nerd_font or false
@@ -28,8 +30,8 @@ function M.setup()
 		},
 	})
 
-	-- indent-blankline
-	local highlight = {
+	-- dragonmode indent-blankline
+	local dragon_highlight = {
 		"DragonRed",
 		"DragonYellow",
 		"DragonBlue",
@@ -37,6 +39,17 @@ function M.setup()
 		"DragonGreen",
 		"DragonViolet",
 		"DragonCyan",
+	}
+
+	-- nightmode indent-blankline
+	local tokyo_highlight = {
+		"TokyoRed",
+		"TokyoYellow",
+		"TokyoBlue",
+		"TokyoOrange",
+		"TokyoGreen",
+		"TokyoMagenta",
+		"TokyoCyan",
 	}
 
 	local hooks = require("ibl.hooks")
@@ -50,9 +63,16 @@ function M.setup()
 		vim.api.nvim_set_hl(0, "DragonGreen", { fg = "#8a9a7b" })
 		vim.api.nvim_set_hl(0, "DragonViolet", { fg = "#8892A7" })
 		vim.api.nvim_set_hl(0, "DragonCyan", { fg = "#8ea4a2" })
+		vim.api.nvim_set_hl(0, "TokyoRed", { fg = "#f7768e" })
+		vim.api.nvim_set_hl(0, "TokyoYellow", { fg = "#e0af68" })
+		vim.api.nvim_set_hl(0, "TokyoBlue", { fg = "#7aa2f7" })
+		vim.api.nvim_set_hl(0, "TokyoOrange", { fg = "#ff9e64" })
+		vim.api.nvim_set_hl(0, "TokyoGreen", { fg = "#9ece6a" })
+		vim.api.nvim_set_hl(0, "TokyoMagenta", { fg = "#bb9af7" })
+		vim.api.nvim_set_hl(0, "TokyoCyan", { fg = "#7dcfff" })
 	end)
 
-	require("ibl").setup({ indent = { highlight = highlight } })
+	require("ibl").setup({ indent = { highlight = tokyo_highlight } })
 
 	-- todo
 	require("todo-comments").setup({
