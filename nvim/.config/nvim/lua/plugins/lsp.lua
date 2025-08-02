@@ -27,7 +27,8 @@ function M.setup()
 			map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
 			map("<leader>D", require("telescope.builtin").lsp_type_definitions, "Type [D]efinition")
 			map("<leader>ds", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
-			map("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
+			map("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols,
+				"[W]orkspace [S]ymbols")
 			map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
 			map("<leader>ca", vim.lsp.buf.code_action, "[C]ode [A]ction")
 			map("K", vim.lsp.buf.hover, "Hover Documentation")
@@ -35,7 +36,8 @@ function M.setup()
 			map("<leader>tl", M.toggle, "[T]oggle [L]SP")
 			local client = vim.lsp.get_client_by_id(event.data.client_id)
 			if client and client.server_capabilities.documentHighlightProvider then
-				local highlight_augroup = vim.api.nvim_create_augroup("kickstart-lsp-highlight", { clear = false })
+				local highlight_augroup = vim.api.nvim_create_augroup("kickstart-lsp-highlight",
+					{ clear = false })
 				vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
 					buffer = event.buf,
 					group = highlight_augroup,
@@ -110,104 +112,7 @@ function M.setup()
 		},
 	}
 	rust_lsp.rust_analyzer.setup(rust_config)
-	local zig_lsp = require("lspconfig")
-	local zls_cmd = { "zls" }
-	local zls_config = {
-		cmd = zls_cmd,
-		filetypes = { "zig" },
-		root_dir = zig_lsp.util.root_pattern(".git"),
-	}
-	zig_lsp.zls.setup(zls_config)
-	local py_lsp = require("lspconfig")
-	py_lsp.pylyzer.setup({
-		cmd = { "/home/archer/.python/bin/pylyzer", "--server" },
-		settings = {
-			python = {
-				analysis = {
-					diagnosticMode = "workspace",
-					useLibraryCodeForTypes = true,
-				},
-			},
-		},
-	})
-	require("lspconfig").pylsp.setup({
-		cmd = { "/home/archer/.python/bin/pylsp" },
-		settings = {
-			pylsp = {
-				plugins = {
-					autopep8 = {
-						enabled = true,
-						line_length = 120,
-					},
-					pycodestyle = {
-						enabled = true,
-						maxLineLength = 120,
-					},
-				},
-			},
-		},
-	})
-	local clangd_lsp = require("lspconfig")
-	local clangd_cmd = {
-		"clangd",
-		"--enable-config",
-		"--clang-tidy",
-		"--completion-style=detailed",
-		"--header-insertion=never",
-		"--std=c++20",
-		"--compile-commands-dir=build",
-		"--background-index",
-		"--pch-storage=memory",
-		"--header-insertion-decorators",
-		"--function-arg-placeholders",
-		"--log=verbose",
-	}
-	local clangd_config = {
-		cmd = clangd_cmd,
-		capabilities = capabilities,
-		filetypes = { "c", "cpp", "objc", "objcpp" },
-		root_dir = require("lspconfig").util.root_pattern("compile_commands.json", "compile_flags.txt", ".git"),
-	}
-	clangd_lsp.clangd.setup(clangd_config)
-	local clangd_enabled = true
-	function ToggleClangdFeatures()
-		clangd_enabled = not clangd_enabled
-		if clangd_enabled then
-			vim.diagnostic.enable()
-			print("Clangd LSP features enabled")
-		else
-			vim.diagnostic.enable(false)
-			print("Clangd LSP features disabled")
-		end
-	end
-	local kotlin_lsp = require("lspconfig")
-	kotlin_lsp.kotlin_language_server.setup({
-		cmd = { "/home/archer/.kotlin-language-server/build/install/server/bin/kotlin-language-server" },
-		capabilities = require("cmp_nvim_lsp").default_capabilities(),
-		settings = {
-			kotlin = {
-				formatting = {
-					indentSize = 2,
-				},
-			},
-		},
-	})
-	local servers = {
-		zls = {},
-		clangd = {},
-		gopls = {},
-		pylyzer = {},
-		pylsp = {},
-		lua_ls = {
-			settings = {
-				Lua = {
-					completion = {
-						callSnippet = "Replace",
-					},
-				},
-			},
-		},
-	}
+	local servers = {}
 	require("mason").setup()
 	local ensure_installed = vim.tbl_keys(servers or {})
 	vim.list_extend(ensure_installed, {
@@ -220,7 +125,8 @@ function M.setup()
 		handlers = {
 			function(server_name)
 				local server = servers[server_name] or {}
-				server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
+				server.capabilities = vim.tbl_deep_extend("force", {}, capabilities,
+					server.capabilities or {})
 				require("lspconfig")[server_name].setup(server)
 			end,
 		},
