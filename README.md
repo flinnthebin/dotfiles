@@ -1,3 +1,3 @@
 # dotfiles
-incase i delete /usr/bin (again)
+incase i delete /usr/bin (again)  
 or /usr/share/
