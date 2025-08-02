@@ -307,11 +307,11 @@ function stream() {
 # monitor
 
 mirror() {
-  xrandr --output HDMI-1-0 --mode 1920x1080 --same-as eDP
+  xrandr --output HDMI-1-1 --mode 1920x1080 --same-as eDP
 }
 
 dual() {
-  xrandr --output HDMI-1-0 --mode 1920x1080 --left-of eDP --auto
+  xrandr --output HDMI-1-1 --mode 1920x1080 --left-of eDP --auto
 }
 
 # antikris
@@ -319,20 +319,6 @@ antikris() {
     xrandr --output eDP --gamma 1:1:1 --brightness 1
 }
 
-[ -f "/home/archer/.ghcup/env" ] && . "/home/archer/.ghcup/env" # ghcup-env
 . "$HOME/.cargo/env"
 
-source /usr/share/nvm/init-nvm.sh
-
-# node-server
-node-server() {
-    (cd ~/uni/bigbrain/frontend && npm run dev &)
-    (cd ~/uni/bigbrain/backend && npm start & echo $! >> ~/pid.txt)
-}
-
-# kill-server
-kill-server() {
-    while read -r pid; do
-        kill "$pid"
-    done < ~/pid.txt
-}
+mirror

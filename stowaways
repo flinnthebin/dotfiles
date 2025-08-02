@@ -23,3 +23,4 @@ for dir in "${usr_dirs[@]}"; do
   stow -D "$dir" 2>/dev/null
   stow "$dir"
 done
+
