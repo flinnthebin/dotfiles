@@ -7,7 +7,6 @@ git
 gimp
 git-delta
 ghostty
-gtypist
 pipewire
 pipewire-pulse
 pipewire-alsa
