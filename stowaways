@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+
+# Prevent clash with system .zshrc
+rm ~/.zshrc
+
+if ! command -v stow >/dev/null 2>&1; then
+  echo "Error: GNU Stow not found in PATH."
+  exit 1
+fi
+
+cd "$DOTFILES" || { echo "Error: Unable to navigate to $DOTFILES"; exit 1; }
+
+IFS=',' read -r -a sys_dirs <<< "$SYS_DIRS"
+for dir in "${sys_dirs[@]}"; do
+  echo "Stowing $dir..."
+  sudo stow -D -t / "$dir" 2>/dev/null
+  sudo stow -t / "$dir"
+done
+sudo fc-cache -fv
+IFS=',' read -r -a usr_dirs <<< "$USR_DIRS"
+for dir in "${usr_dirs[@]}"; do
+  echo "Stowing $dir..."
+  stow -D "$dir" 2>/dev/null
+  stow "$dir"
+done
