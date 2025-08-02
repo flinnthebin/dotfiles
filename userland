@@ -16,13 +16,9 @@ fi
 
 echo "Installing..."
 
-sudo pacman -Scc
-sudo pacman -Sy archlinux-keyring manjaro-keyring
-sudo pacman -S linux66 linux66-headers
-sudo pacman -S linux615-headers
-reboot
+# update packages
 sudo pacman-mirrors --api --set-branch unstable
-sudo pacman-mirrors --fasttrack 5 && sudo pacman -Syu 
+sudo pacman-mirrors --fasttrack 5 && sudo pacman -Syu
 sudo pacman -Syu --needed - < ~/.dotfiles/pkglist.txt
 
 # get audio working
@@ -34,8 +30,6 @@ git config --global user.email "christopher.flinn@gmail.com"
 git config --global user.name "Chris Flinn"
 
 # oh-my-zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
 # Required for config files
 # Python venv
 python3 -m venv .pynv
@@ -53,14 +47,17 @@ cd ~/
 # RTL8821 drivers for TP-Link AC600 Archer
 # (https://github.com/morrownr/8821au-20210708)
 # requires blackarch/pfring-dkms 1:3962.cb73329b-1
-
 yay -S rtl8812au-dkms-git
 
+# GNU Typist
+yay -S gtypist
+
 # Hardened Firefox
+firefox # (generate ~/.mozilla)
+sleep 2
 wget -O "$(find ~/.mozilla/firefox -maxdepth 1 -type d -name '*.default-release')/user.js" https://raw.githubusercontent.com/arkenfox/user.js/refs/heads/master/user.js
 
-# Set zsh as default shell
-chsh -s $(which zsh)
+# oh-my-zsh (sets zsh as default shell)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
 reboot
-
-
