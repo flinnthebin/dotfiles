@@ -1,4 +1,3 @@
-alacritty
 chromium
 discord
 git
@@ -8,7 +7,9 @@ ghostty
 firefox
 iaito
 kdenlive
+luarocks
 neovim
 stow
+tmux
 uv
 zsh
