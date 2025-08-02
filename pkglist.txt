@@ -1,10 +1,16 @@
+bluez
+bluez-utils
 chromium
 discord
+firefox
 git
 gimp
 git-delta
 ghostty
-firefox
+pipewire
+pipewire-pulse
+pipewire-alsa
+pipewire-media-session
 iaito
 kdenlive
 luarocks

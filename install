@@ -25,6 +25,9 @@ sudo pacman-mirrors --api --set-branch unstable
 sudo pacman-mirrors --fasttrack 5 && sudo pacman -Syu 
 sudo pacman -Syu --needed - < ~/.dotfiles/pkglist.txt
 
+# get audio working
+systemctl --user enable --now pipewire pipewire-pulse
+
 # git
 git config --global core.excludesfile ~/.gitignore_global
 git config --global user.email "christopher.flinn@gmail.com"
