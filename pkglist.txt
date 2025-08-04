@@ -1,8 +1,10 @@
 bluez
 bluez-utils
+cmake
 chromium
 discord
 firefox
+gcc
 git
 gimp
 git-delta
@@ -11,11 +13,15 @@ pipewire
 pipewire-pulse
 pipewire-alsa
 pipewire-media-session
+pkgconf
 iaito
 kdenlive
+lm_sensors
 luarocks
+make
 neovim
 stow
 tmux
 uv
+yaml-cpp
 zsh

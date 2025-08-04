@@ -256,20 +256,12 @@ cppdoc() {
 }
 
 # AUDIO
-airpods() {
-    pulseaudio -k
-    pulseaudio --start
-    bluetoothctl connect "B0:3F:64:21:7E:D7"
-}
-
 beats() {
-    pulseaudio -k
-    pulseaudio --start
     bluetoothctl connect "F8:66:5A:4E:F9:75"
 }
 
 beatskill() {
-bluetoothctl disconnect "F8:66:5A:4E:F9:75"
+    bluetoothctl disconnect "F8:66:5A:4E:F9:75"
 }
 
 
