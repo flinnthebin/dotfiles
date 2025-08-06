@@ -2,6 +2,7 @@ bluez
 bluez-utils
 chromium
 discord
+edk2-ovmf
 firefox
 git
 gimp
@@ -15,7 +16,10 @@ iaito
 kdenlive
 luarocks
 neovim
+qemu-desktop
 stow
+strace
 tmux
 uv
+virt-manager
 zsh
