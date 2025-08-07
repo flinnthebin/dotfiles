@@ -32,7 +32,7 @@ git config --global user.name "Chris Flinn"
 # oh-my-zsh
 # Required for config files
 # Python venv
-python3 -m venv .pynv
+python3 -m venv "$HOME/.pynv"
 
 # Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -60,4 +60,4 @@ wget -O "$(find ~/.mozilla/firefox -maxdepth 1 -type d -name '*.default-release'
 # oh-my-zsh (sets zsh as default shell)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-reboot
+# requires manual reboot

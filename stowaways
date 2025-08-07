@@ -1,5 +1,9 @@
 #!/usr/bin/env sh
 
+USR_DIRS="${USR_DIRS:-clang,ghostty,git,i3,i3-scrot,nvim,oh-my-zsh,tmux,zsh}"
+SYS_DIRS="${SYS_DIRS:-bin,fonts}"
+DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+
 # Prevent clash with system .zshrc
 rm ~/.zshrc
 
