@@ -4,9 +4,11 @@ USR_DIRS="${USR_DIRS:-clang,ghostty,git,i3,i3-scrot,nvim,oh-my-zsh,tmux,zsh}"
 SYS_DIRS="${SYS_DIRS:-bin,fonts}"
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 
-# Prevent clash with system .zshrc
-rm ~/.zshrc
+# Prevent clash with system .zshrc, user.dirs
+rm "$HOME/.zshrc"
+rm "$HOME/.config/user-dirs.dirs"
 
+# Stow dirs
 if ! command -v stow >/dev/null 2>&1; then
   echo "Error: GNU Stow not found in PATH."
   exit 1
@@ -26,5 +28,16 @@ for dir in "${usr_dirs[@]}"; do
   echo "Stowing $dir..."
   stow -D "$dir" 2>/dev/null
   stow "$dir"
+done
+
+# Rename user dirs
+for pair in "Desktop:desktop" "Downloads:downloads" "Templates:templates" "Public:public" \
+            "Documents:documents" "Music:music" "Pictures:pictures" "Videos:videos"; do
+  src=$(printf "%s" "$pair" | cut -d: -f1)
+  dst=$(printf "%s" "$pair" | cut -d: -f2)
+  if [ -d "$HOME/$src" ] && [ ! -e "$HOME/$dst" ]; then
+    mv "$HOME/$src" "$HOME/$dst"
+    echo "Moved $HOME/$src to $HOME/$dst"
+  fi
 done
 
