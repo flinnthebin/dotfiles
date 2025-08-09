@@ -12,7 +12,6 @@ pipewire
 pipewire-pulse
 pipewire-alsa
 pipewire-media-session
-iaito
 kdenlive
 luarocks
 neovim

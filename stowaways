@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
-USR_DIRS="${USR_DIRS:-clang,ghostty,git,i3,i3-scrot,nvim,oh-my-zsh,tmux,zsh}"
-SYS_DIRS="${SYS_DIRS:-bin,fonts}"
+USR_DIRS="${USR_DIRS:-clang,dirs, ghostty,git,i3,i3-scrot,nvim,oh-my-zsh,tmux,zsh}"
+SYS_DIRS="${SYS_DIRS:-bin,fonts,i8k}"
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 
 # Prevent clash with system .zshrc, user.dirs
@@ -40,4 +40,6 @@ for pair in "Desktop:desktop" "Downloads:downloads" "Templates:templates" "Publi
     echo "Moved $HOME/$src to $HOME/$dst"
   fi
 done
+mkdir "$HOME/git"
 
+sudo modprobe -f i8k

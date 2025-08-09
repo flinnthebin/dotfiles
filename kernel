@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-USR_DIRS="${USR_DIRS:-clang,ghostty,git,i3,i3-scrot,nvim,oh-my-zsh,tmux,zsh}"
-SYS_DIRS="${SYS_DIRS:-bin,fonts}"
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 REPO_URL="https://github.com/flinnthebin/dotfiles"
 
@@ -18,6 +16,6 @@ echo "Installing..."
 
 sudo pacman -Scc
 sudo pacman -Sy archlinux-keyring manjaro-keyring
-sudo pacman -S linux66 linux66-headers
 sudo pacman -S linux615-headers base-devel
+sudo pacman -Syyu
 reboot
