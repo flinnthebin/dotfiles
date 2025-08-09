@@ -42,4 +42,5 @@ for pair in "Desktop:desktop" "Downloads:downloads" "Templates:templates" "Publi
 done
 mkdir "$HOME/git"
 
-sudo modprobe -f i8k
+sudo modprobe -r i8k 2>/dev/null
+sudo modprobe i8k force=1
