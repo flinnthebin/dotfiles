@@ -67,10 +67,10 @@ ZSH_THEME="rosepine"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
-
+source /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -110,17 +110,23 @@ HISTSIZE=5000
 SAVEHIST=5000
 HISTFILE=~/.zsh_history
 
-# Use modern completion system
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-autoload -Uz compinit
-compinit
+# keybindings for history-substring-search
+zmodload zsh/terminfo
+bindkey "$terminfo[kcuu1]" history-substring-search-up
+bindkey "$terminfo[kcud1]" history-substring-search-down
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+
+# Highlighting
+ZSH_HIGHLIGHT_STYLES[command]='fg=green'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red,bold'
 
 # Source history for autosuggestions
-if [ -f /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-elif [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
-  source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-fi
+#if [ -f /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+#  source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+#elif [ -f /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh ]; then
+#  source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+#fi
 
 # Alias
 alias cat="cat -v"
