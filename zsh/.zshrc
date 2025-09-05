@@ -198,6 +198,8 @@ function virtualenv_prompt_info() {
 }
 source "$HOME/.pynv/bin/activate"
 
+prependPath /opt/cuda/bin
+prependPath /opt/cuda/lib64
 prependPath "$HOME/.kotlin-language-server/src/main/kotlin/org/javacs/kt/semantictokens/SemanticTokens.kt"
 prependPath "$HOME/.local/bin"
 prependPath "$HOME/.ghcup/bin"
@@ -305,11 +307,11 @@ function stream() {
 # monitor
 
 mirror() {
-  xrandr --output HDMI-1-1 --mode 1920x1080 --same-as eDP
+  xrandr --output HDMI-1-0 --mode 1920x1080 --same-as eDP
 }
 
 dual() {
-  xrandr --output HDMI-1-1 --mode 1920x1080 --left-of eDP --auto
+  xrandr --output HDMI-1-0 --mode 1920x1080 --left-of eDP --auto
 }
 
 # antikris
