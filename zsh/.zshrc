@@ -314,11 +314,98 @@ dual() {
   xrandr --output HDMI-1-0 --mode 1920x1080 --left-of eDP --auto
 }
 
-# antikris
-antikris() {
+# reset display
+resetdisplay() {
     xrandr --output eDP --gamma 1:1:1 --brightness 1
 }
 
 . "$HOME/.cargo/env"
+
+# ===== llama.cpp paths =====
+export LLM_BIN="$HOME/llama.cpp/build/bin/llama-cli"
+export LLM_MODEL="$HOME/models/Qwen3-14B-Q4_K_M.gguf"
+
+# ===== flags as an ARRAY (zsh-friendly) =====
+# (strings won't word-split in zsh; arrays will)
+LLM_FLAGS=(
+  -ngl 37
+  -c 4096
+  -b 48
+  -ub 8
+  -t 8
+  --temp 0.2
+  --top-p 0.9
+)
+
+# ===== helper: minimal chat prompt builder =====
+_llm_chat_prompt() {
+  local system="${1:-You are a helpful coding assistant.}"
+  local user="$2"
+  cat <<'EOF'
+<|im_start|>system
+EOF
+  printf '%s\n' "$system"
+  cat <<'EOF'
+<|im_end|>
+<|im_start|>user
+EOF
+  printf '%s\n' "$user"
+  cat <<'EOF'
+<|im_end|>
+<|im_start|>assistant
+EOF
+}
+
+# ===== runner: prefer prime-run if present =====
+_llm_run() {
+  if command -v prime-run >/dev/null 2>&1; then
+    prime-run "$LLM_BIN" -m "$LLM_MODEL" "${LLM_FLAGS[@]}" "$@"
+  else
+    "$LLM_BIN" -m "$LLM_MODEL" "${LLM_FLAGS[@]}" "$@"
+  fi
+}
+
+# ===== ai: always load ~/.prompt as system prompt; -f to attach files =====
+ai() {
+  local sys user_msg files=()
+
+  # 1) system prompt from ~/.prompt (fallback if missing)
+  if [[ -f "$HOME/.prompt" ]]; then
+    sys="$(<"$HOME/.prompt")"
+  else
+    sys="You are a helpful coding assistant."
+  fi
+
+  # 2) parse args (collect -f files; rest becomes user_msg)
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      -f|--file)
+        shift
+        if [[ -n "$1" && -f "$1" ]]; then
+          files+=("$1")
+        else
+          echo "ai: warning: file not found: $1" >&2
+        fi
+        ;;
+      *)
+        user_msg+="${user_msg:+ }$1"
+        ;;
+    esac
+    shift
+  done
+
+  # 3) append file contents
+  for f in "${files[@]}"; do
+    user_msg+=$'\n\n'"--- BEGIN FILE: $f ---"$'\n'"$(sed -n '1,20000p' -- "$f")"$'\n'"--- END FILE: $f ---"
+  done
+
+  # 4) build chat prompt and run
+  local prompt
+  prompt="$(_llm_chat_prompt "$sys" "$user_msg")"
+  _llm_run -p "$prompt"
+}
+
+
+# fin
 
 mirror
