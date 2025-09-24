@@ -202,6 +202,7 @@ prependPath /opt/cuda/bin
 prependPath /opt/cuda/lib64
 prependPath "$HOME/.kotlin-language-server/src/main/kotlin/org/javacs/kt/semantictokens/SemanticTokens.kt"
 prependPath "$HOME/.local/bin"
+prependPath "$HOME/.local/share/gem/ruby/3.4.0/bin"
 prependPath "$HOME/.ghcup/bin"
 appendPath "$HOME/.cabal/bin/xmonad"
 appendPath "/usr/share/platform-tools"

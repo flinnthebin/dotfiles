@@ -16,6 +16,6 @@ echo "Installing..."
 
 sudo pacman -Scc
 sudo pacman -Sy archlinux-keyring manjaro-keyring
-sudo pacman -S linux615-headers base-devel
+sudo pacman -S linux-meta
 sudo pacman -Syyu
 reboot
