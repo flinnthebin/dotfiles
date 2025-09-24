@@ -4,6 +4,11 @@ USR_DIRS="${USR_DIRS:-clang,dirs, ghostty,git,i3,i3-scrot,nvim,oh-my-zsh,tmux,zs
 SYS_DIRS="${SYS_DIRS:-bin,fonts,i8k}"
 DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
 
+# oh-my-zsh deps
+git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+git clone https://github.com/zsh-users/zsh-history-substring-search ~/.oh-my-zsh/custom/plugins/zsh-history-substring-search
+
 # Prevent clash with system .zshrc, user.dirs
 rm "$HOME/.zshrc"
 rm "$HOME/.config/user-dirs.dirs"
