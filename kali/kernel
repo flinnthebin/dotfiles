@@ -14,8 +14,12 @@ fi
 
 echo "Installing..."
 
-sudo pacman -Scc
-sudo pacman -Sy archlinux-keyring manjaro-keyring
-sudo pacman -S linux-meta
-sudo pacman -Syyu
-reboot
+export DEBIAN_FRONTEND=noninteractive
+sudo apt update
+sudo apt install -y linux-image-amd64 linux-headers-amd64
+sudo apt install kali-linux-everything
+sudo apt -y full-upgrade
+sudo apt -y autoremove --purge
+sudo apt autoclean
+sudo apt clean
+sudo reboot

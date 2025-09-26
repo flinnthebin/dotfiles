@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+DOTFILES="${DOTFILES:-$HOME/.dotfiles}"
+REPO_URL="https://github.com/flinnthebin/dotfiles"
+
+if [ -d "$DOTFILES" ]; then
+    echo ".dotfiles found. Pulling the latest changes..."
+    git -C "$DOTFILES" pull
+else
+    echo ".dotfiles not found. Cloning repository..."
+    mkdir -p "$DOTFILES"
+    git clone "$REPO_URL" "$DOTFILES"
+fi
+
+echo "Installing..."
+
+# update packages
+PKGLIST="$DOTFILES/pkglist.kali.txt"
+if [ -f "$PKGLIST" ]; then
+  sudo apt update
+  PKGS="$(awk 'NF && $1 !~ /^#/' "$PKGLIST" | xargs echo)"
+  [ -n "$PKGS" ] && sudo apt -y install $PKGS
+else
+  echo "   - $PKGLIST not found; skipping bulk apt install."
+fi
+
+# astral UV
+curl -LsSf https://astral.sh/uv/install.sh | sh
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+
+# discord
+if apt-cache show discord >/dev/null 2>&1; then
+  sudo apt -y install discord
+else
+  echo "   - discord not in apt; installing via Flatpak."
+  if ! command -v flatpak >/dev/null 2>&1; then
+    sudo apt -y install flatpak
+    # Optionally integrate with GNOME/KDE software center:
+    # sudo apt -y install gnome-software-plugin-flatpak || true
+  fi
+  # Add Flathub if missing
+  if ! flatpak remotes | grep -q flathub; then
+    sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
+  fi
+  sudo flatpak install -y flathub com.discordapp.Discord
+fi
+
+# ghostty
+if command -v flatpak >/dev/null 2>&1; then
+  sudo flatpak install -y flathub dev.zed.Ghostty || true
+fi
+
+# get audio working
+systemctl --user enable --now pipewire pipewire-pulse wireplumber || true
+
+# git
+git config --global core.excludesfile ~/.gitignore_global
+git config --global user.email "christopher.flinn@gmail.com"
+git config --global user.name "Chris Flinn"
+
+# pwndbg (https://github.com/pwndbg/pwndbg)
+git clone https://github.com/pwndbg/pwndbg ~/.pwndbg
+cd ~/.pwndbg
+sudo sh setup.sh
+echo "source ~/.pwndbg/gdbinit.py" > ~/.gdbinit
+cd ~/
+
+# Hardened Firefox
+firefox # (generate ~/.mozilla)
+sleep 2
+wget -O "$(find ~/.mozilla/firefox -maxdepth 1 -type d -name '*.default-release')/user.js" https://raw.githubusercontent.com/arkenfox/user.js/refs/heads/master/user.js
+
+# oh-my-zsh (sets zsh as default shell)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# requires manual reboot

@@ -1,0 +1,17 @@
+bluez
+chromium
+delta
+firefox-esr
+git
+gimp
+kdenlive
+luarocks
+neovim
+stow
+strace
+tmux
+zsh
+pipewire
+pipewire-alsa
+pipewire-pulse
+wireplumber
